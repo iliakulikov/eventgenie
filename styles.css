@@ -6,7 +6,26 @@
 }
 
 /* Custom Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+@font-face {
+    font-family: 'Formular';
+    src: url('fonts/Formular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Spoof';
+    src: url('fonts/Spoof-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Spoof';
+    src: url('fonts/Spoof-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
 
 :root {
     /* Colors */
@@ -25,24 +44,27 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Spoof', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: linear-gradient(90deg, #101318 0%, #101318 100%);
     color: var(--text-white);
     line-height: 1.5;
     overflow-x: hidden;
-    width: 1512px;
+    width: 100%;
+    max-width: 1512px;
     margin: 0 auto;
 }
 
 /* Header */
 .header {
     position: relative;
-    width: 1512px;
+    width: 100%;
+    max-width: 1512px;
     height: 117px;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    margin: 0 auto;
 }
 
 .logo {
@@ -132,6 +154,7 @@ body {
 }
 
 .hero-title {
+    font-family: 'Formular', sans-serif;
     text-align: center;
     font-size: 85px;
     font-weight: 700;
@@ -170,6 +193,7 @@ body {
 .hero-subtitle .highlight {
     color: var(--text-white);
     font-weight: 500;
+    font-family: 'Spoof', sans-serif;
 }
 
 .app-preview-container {
@@ -207,6 +231,7 @@ body {
     padding: 14px 20px;
     font-size: 18px;
     font-weight: 500;
+    font-family: 'Spoof', sans-serif;
     color: var(--dark-bg);
     cursor: pointer;
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
@@ -254,6 +279,7 @@ body {
 }
 
 .section-title {
+    font-family: 'Formular', sans-serif;
     font-size: 60px;
     font-weight: 700;
     line-height: 60px;
@@ -289,6 +315,7 @@ body {
 }
 
 .problem-card h3 {
+    font-family: 'Formular', sans-serif;
     font-size: 20px;
     font-weight: 500;
     line-height: 28px;
@@ -327,6 +354,7 @@ body {
 }
 
 .features-heading {
+    font-family: 'Formular', sans-serif;
     text-align: center;
     font-size: 24px;
     font-weight: 500;
@@ -360,6 +388,7 @@ body {
 }
 
 .feature-card h4 {
+    font-family: 'Formular', sans-serif;
     font-size: 20px;
     font-weight: 500;
     line-height: 28px;
@@ -434,6 +463,7 @@ body {
     justify-content: center;
     font-size: 24px;
     font-weight: 500;
+    font-family: 'Spoof', sans-serif;
     color: var(--primary-orange);
     flex-shrink: 0;
 }
@@ -444,6 +474,7 @@ body {
 }
 
 .step-content h4 {
+    font-family: 'Formular', sans-serif;
     font-size: 24px;
     font-weight: 500;
     line-height: 32px;
@@ -453,6 +484,7 @@ body {
 .step-time {
     font-size: 14px;
     font-weight: 500;
+    font-family: 'Spoof', sans-serif;
     color: var(--primary-orange);
     line-height: 20px;
 }
@@ -530,6 +562,7 @@ body {
 }
 
 .safety-card h4 {
+    font-family: 'Formular', sans-serif;
     font-size: 20px;
     font-weight: 500;
     line-height: 28px;
@@ -572,6 +605,7 @@ body {
 }
 
 .cta-title {
+    font-family: 'Formular', sans-serif;
     font-size: 60px;
     font-weight: 700;
     line-height: 60px;
@@ -590,6 +624,7 @@ body {
     padding: 18px 48px;
     font-size: 18px;
     font-weight: 500;
+    font-family: 'Spoof', sans-serif;
     color: var(--dark-bg);
     cursor: pointer;
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
@@ -615,25 +650,36 @@ body {
 }
 
 /* Responsive Styles */
+/* Large tablets and small desktops */
 @media (max-width: 1512px) {
-    body {
-        width: 100%;
-        max-width: 1512px;
+    .hero-container {
+        max-width: 1024px;
+        padding: 0 32px 60px 32px;
+    }
+    
+    .problems-container,
+    .features-container,
+    .steps-container,
+    .safety-container,
+    .cta-container {
+        max-width: 896px;
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+    
+    .features-container {
+        max-width: 1024px;
     }
 }
 
 /* Tablet styles */
 @media (max-width: 1024px) {
-    body {
-        width: 100%;
-    }
-    
     .header {
-        width: 100%;
         padding: 0 32px;
     }
     
     .hero-section {
+        min-height: auto;
         padding-bottom: 60px;
     }
     
@@ -659,6 +705,14 @@ body {
     .app-preview {
         width: 280px;
         height: auto;
+    }
+    
+    .problems-section,
+    .steps-section,
+    .safety-section,
+    .cta-section {
+        height: auto;
+        min-height: auto;
     }
     
     .problems-container,
@@ -706,6 +760,16 @@ body {
     
     .step-card {
         width: 100%;
+    }
+    
+    .steps-section .section-bg {
+        width: 100%;
+        left: 0;
+    }
+    
+    .safety-section .section-bg {
+        width: 100%;
+        left: 0;
     }
 }
 
@@ -787,9 +851,9 @@ body {
     }
     
     .features-section {
-        padding: 60px 0;
+        padding: 0px 0;
         min-height: auto;
-        margin-top: 60px;
+        margin-top: 30px;
     }
     
     .features-container {
