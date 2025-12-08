@@ -43,7 +43,7 @@
                 <img src="img/app-preview.webp" alt="App Preview" class="app-preview">
             </div>
             
-            <button class="cta-button">Join the Next Experience</button>
+            <button class="cta-button" id="heroQuizBtn">Join the Next Experience</button>
         </div>
     </section>
 
@@ -215,7 +215,7 @@
                 <span class="title-gradient">Are you?</span>
             </h2>
             
-            <button class="cta-button-large">Find Your Group Now</button>
+            <button class="cta-button-large" id="openQuizBtn">Find Your Group Now</button>
             
             <p class="cta-note">Limited spots available each weekend • Ages 25-45 • London</p>
             
@@ -225,5 +225,269 @@
             </div>
         </div>
     </section>
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="quiz-modal">
+        <div class="quiz-overlay"></div>
+        <div class="quiz-container">
+            <button class="quiz-close" id="closeQuizBtn">&times;</button>
+            
+            <form id="quizForm">
+                <!-- Screen 1: Event Filter -->
+                <div class="quiz-screen active" data-screen="1">
+                    <div class="quiz-progress-bar">
+                        <div class="quiz-progress-fill" style="width: 8.33%"></div>
+                    </div>
+                    <div class="quiz-progress-text">
+                        <span class="quiz-section-label">Screen 1: The Event Filter</span>
+                        <span class="quiz-step-count">1 of 12</span>
+                    </div>
+                    <div class="quiz-header">
+                        <h2 class="quiz-title">The Event Filter</h2>
+                        <p class="quiz-subtitle">Choose your preferred vibe for this Saturday</p>
+                    </div>
+                    <div class="quiz-question">
+                        <label class="quiz-label">What is your preferred vibe for this Saturday?</label>
+                        <p class="quiz-helper">Choose one. We will match you with a group heading to a top-tier exhibition in this category.</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option-card">
+                                <input type="radio" name="vibe" value="classic" required>
+                                <div class="quiz-option-content">
+                                    <span class="quiz-emoji">🏛</span>
+                                    <h4>Classic & Historical</h4>
+                                    <p>Oil paintings, grand sculpture, history. (e.g., National Gallery vibes)</p>
+                                </div>
+                            </label>
+                            <label class="quiz-option-card">
+                                <input type="radio" name="vibe" value="modern" required>
+                                <div class="quiz-option-content">
+                                    <span class="quiz-emoji">🧠</span>
+                                    <h4>Modern & Provocative</h4>
+                                    <p>Abstract, conceptual, weird, installations. (e.g., Tate Modern vibes)</p>
+                                </div>
+                            </label>
+                            <label class="quiz-option-card">
+                                <input type="radio" name="vibe" value="photography" required>
+                                <div class="quiz-option-content">
+                                    <span class="quiz-emoji">📸</span>
+                                    <h4>Photography & Visuals</h4>
+                                    <p>Fashion, street photography, design. (e.g., V&A / Photographers' Gallery vibes)</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="button" class="quiz-button" data-next="2">
+                        Next
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Screen 2: Social Dynamics -->
+                <div class="quiz-screen" data-screen="2">
+                    <div class="quiz-progress-bar">
+                        <div class="quiz-progress-fill" style="width: 41.66%"></div>
+                    </div>
+                    <div class="quiz-progress-text">
+                        <span class="quiz-section-label">Screen 2: Social Dynamics</span>
+                        <span class="quiz-step-count">2-5 of 12</span>
+                    </div>
+                    <div class="quiz-header">
+                        <h2 class="quiz-title">Social Dynamics</h2>
+                        <p class="quiz-subtitle">Help us understand your personality</p>
+                    </div>
+                    
+                    <!-- Question 2.1 -->
+                    <div class="quiz-question">
+                        <label class="quiz-label">In a group setting, I am usually...</label>
+                        <div class="quiz-scale">
+                            <span class="quiz-scale-label">Introvert</span>
+                            <div class="quiz-scale-inputs">
+                                <input type="radio" name="introvert_extrovert" value="1" id="ie1" required>
+                                <label for="ie1">1</label>
+                                <input type="radio" name="introvert_extrovert" value="2" id="ie2">
+                                <label for="ie2">2</label>
+                                <input type="radio" name="introvert_extrovert" value="3" id="ie3">
+                                <label for="ie3">3</label>
+                                <input type="radio" name="introvert_extrovert" value="4" id="ie4">
+                                <label for="ie4">4</label>
+                                <input type="radio" name="introvert_extrovert" value="5" id="ie5">
+                                <label for="ie5">5</label>
+                                <input type="radio" name="introvert_extrovert" value="6" id="ie6">
+                                <label for="ie6">6</label>
+                                <input type="radio" name="introvert_extrovert" value="7" id="ie7">
+                                <label for="ie7">7</label>
+                                <input type="radio" name="introvert_extrovert" value="8" id="ie8">
+                                <label for="ie8">8</label>
+                                <input type="radio" name="introvert_extrovert" value="9" id="ie9">
+                                <label for="ie9">9</label>
+                                <input type="radio" name="introvert_extrovert" value="10" id="ie10">
+                                <label for="ie10">10</label>
+                            </div>
+                            <span class="quiz-scale-label">Extrovert</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 2.2 -->
+                    <div class="quiz-question">
+                        <label class="quiz-label">Are your opinions usually guided by:</label>
+                        <div class="quiz-options-simple">
+                            <label class="quiz-option-simple">
+                                <input type="radio" name="logic_emotion" value="logic" required>
+                                <span>Logic and facts</span>
+                            </label>
+                            <label class="quiz-option-simple">
+                                <input type="radio" name="logic_emotion" value="emotion" required>
+                                <span>Emotions and feelings</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2.3 -->
+                    <div class="quiz-question">
+                        <label class="quiz-label">I enjoy politically incorrect humor:</label>
+                        <div class="quiz-scale">
+                            <span class="quiz-scale-label">Strongly Disagree</span>
+                            <div class="quiz-scale-inputs">
+                                <input type="radio" name="humor" value="1" id="h1" required>
+                                <label for="h1">1</label>
+                                <input type="radio" name="humor" value="2" id="h2">
+                                <label for="h2">2</label>
+                                <input type="radio" name="humor" value="3" id="h3">
+                                <label for="h3">3</label>
+                                <input type="radio" name="humor" value="4" id="h4">
+                                <label for="h4">4</label>
+                                <input type="radio" name="humor" value="5" id="h5">
+                                <label for="h5">5</label>
+                                <input type="radio" name="humor" value="6" id="h6">
+                                <label for="h6">6</label>
+                                <input type="radio" name="humor" value="7" id="h7">
+                                <label for="h7">7</label>
+                                <input type="radio" name="humor" value="8" id="h8">
+                                <label for="h8">8</label>
+                                <input type="radio" name="humor" value="9" id="h9">
+                                <label for="h9">9</label>
+                                <input type="radio" name="humor" value="10" id="h10">
+                                <label for="h10">10</label>
+                            </div>
+                            <span class="quiz-scale-label">Strongly Agree</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 2.4 -->
+                    <div class="quiz-question">
+                        <label class="quiz-label">Do you consider yourself more of a...</label>
+                        <div class="quiz-options-simple">
+                            <label class="quiz-option-simple">
+                                <input type="radio" name="personality_type" value="smart" required>
+                                <span>Smart person (The Analyst/Listener)</span>
+                            </label>
+                            <label class="quiz-option-simple">
+                                <input type="radio" name="personality_type" value="funny" required>
+                                <span>Funny person (The Icebreaker/Energy)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="button" class="quiz-button" data-next="3">
+                        Next
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Screen 3: The Basics -->
+                <div class="quiz-screen" data-screen="3">
+                    <div class="quiz-progress-bar">
+                        <div class="quiz-progress-fill" style="width: 75%"></div>
+                    </div>
+                    <div class="quiz-progress-text">
+                        <span class="quiz-section-label">Screen 3: The Basics</span>
+                        <span class="quiz-step-count">6-12 of 12</span>
+                    </div>
+                    <div class="quiz-header">
+                        <h2 class="quiz-title">The Basics</h2>
+                        <p class="quiz-subtitle">Let's start with some basic information</p>
+                    </div>
+
+                    <div class="quiz-question">
+                        <label class="quiz-label">First Name</label>
+                        <input type="text" name="first_name" class="quiz-input" placeholder="Enter your first name" required>
+                    </div>
+
+                    <div class="quiz-question">
+                        <label class="quiz-label">Last Name</label>
+                        <input type="text" name="last_name" class="quiz-input" placeholder="Enter your last name" required>
+                    </div>
+
+                    <div class="quiz-question">
+                        <label class="quiz-label">Date of Birth</label>
+                        <input type="date" name="dob" class="quiz-input" required>
+                    </div>
+
+                    <div class="quiz-question">
+                        <label class="quiz-label">Gender Identity</label>
+                        <div class="quiz-options-simple">
+                            <label class="quiz-option-simple">
+                                <input type="radio" name="gender" value="woman" required>
+                                <span>Woman</span>
+                            </label>
+                            <label class="quiz-option-simple">
+                                <input type="radio" name="gender" value="man" required>
+                                <span>Man</span>
+                            </label>
+                            <label class="quiz-option-simple">
+                                <input type="radio" name="gender" value="non-binary" required>
+                                <span>Non-binary</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <label class="quiz-label">Industry</label>
+                        <input type="text" name="industry" class="quiz-input" placeholder="e.g., Arts, Tech, Finance..." required>
+                    </div>
+
+                    <div class="quiz-question">
+                        <label class="quiz-label">Phone Number (WhatsApp)</label>
+                        <input type="tel" name="phone" class="quiz-input" placeholder="+44 7XXX XXXXXX" required>
+                    </div>
+
+                    <div class="quiz-question">
+                        <label class="quiz-label">Email</label>
+                        <input type="email" name="email" class="quiz-input" placeholder="your@email.com" required>
+                    </div>
+
+                    <button type="button" class="quiz-button" data-next="4">
+                        Submit
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Screen 4: Success Hook -->
+                <div class="quiz-screen" data-screen="4">
+                    <div class="quiz-success">
+                        <div class="quiz-success-icon">🎉</div>
+                        <h2 class="quiz-success-title">A group with 5 compatible people was found!</h2>
+                        <p class="quiz-success-subtitle">Based on your preferences and your personality match, we have found your crowd for this Saturday.</p>
+                        
+                        <div class="quiz-payment-box">
+                            <p class="quiz-payment-text">💡 The event organization fee is £9.99 per event or £13.99 per month subscription. Are you willing to confirm?</p>
+                            <div class="quiz-payment-options">
+                                <button type="button" class="quiz-payment-button yes" id="confirmYes">Yes</button>
+                                <button type="button" class="quiz-payment-button no" id="confirmNo">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="quiz.js"></script>
 </body>
 </html>
