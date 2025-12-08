@@ -109,7 +109,7 @@
     }
 
     // Send data to Google Sheets using form submission method
-    async function sendToGoogleSheets(data, confirmed) {
+    async function sendToGoogleSheets(data, paymentStatus) {
         const formData = new FormData();
         
         // Add all form fields
@@ -133,7 +133,7 @@
         formData.append('industry', data.industry || '');
         formData.append('phone', data.phone || '');
         formData.append('email', data.email || '');
-        formData.append('payment_confirmed', confirmed ? 'Yes' : 'No');
+        formData.append('payment_confirmed', paymentStatus); // 'Pending', 'Yes', or 'No'
 
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -141,12 +141,18 @@
                 body: formData
             });
 
-            console.log('Data sent to Google Sheets successfully');
+            console.log('Data sent to Google Sheets successfully with status:', paymentStatus);
             return true;
         } catch (error) {
             console.error('Error sending to Google Sheets:', error);
-            alert('There was an error submitting your response. Please try again.');
-            return false;
+            if (paymentStatus === 'Pending') {
+                // Don't show error for initial submission, just log it
+                console.warn('Initial submission failed, but continuing to payment screen');
+                return true; // Continue anyway
+            } else {
+                alert('There was an error submitting your response. Please try again.');
+                return false;
+            }
         }
     }
 
@@ -183,12 +189,27 @@
 
     // Next button handlers
     nextButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.addEventListener('click', async (e) => {
             e.preventDefault();
             const nextScreen = parseInt(button.dataset.next);
             
             if (validateScreen(currentScreen)) {
                 collectFormData();
+                
+                // If moving from screen 3 to 4 (submit stage), send initial data
+                if (currentScreen === 3 && nextScreen === 4) {
+                    // Show loading state on button
+                    button.classList.add('loading');
+                    button.disabled = true;
+                    
+                    // Send initial submission with "Pending" status
+                    await sendToGoogleSheets(formData, 'Pending');
+                    
+                    // Remove loading state
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                }
+                
                 showScreen(nextScreen);
             }
         });
@@ -204,8 +225,8 @@
             confirmYesBtn.disabled = true;
             confirmNoBtn.disabled = true;
             
-            // Send to Google Sheets with confirmation
-            const success = await sendToGoogleSheets(formData, true);
+            // Send to Google Sheets with confirmation (second submission with 'Yes')
+            const success = await sendToGoogleSheets(formData, 'Yes');
             
             if (success) {
                 // Show success message in modal
@@ -233,8 +254,8 @@
             confirmNoBtn.disabled = true;
             confirmYesBtn.disabled = true;
             
-            // Send to Google Sheets without confirmation
-            const success = await sendToGoogleSheets(formData, false);
+            // Send to Google Sheets without confirmation (second submission with 'No')
+            const success = await sendToGoogleSheets(formData, 'No');
             
             if (success) {
                 // Show thank you message in modal
