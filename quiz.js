@@ -45,6 +45,12 @@
         document.body.style.overflow = 'hidden';
         showScreen(1);
         
+        // Hide cookie banner when opening quiz
+        const cookieBanner = document.querySelector('.cookie-banner');
+        if (cookieBanner) {
+            cookieBanner.style.display = 'none';
+        }
+        
         // Capture UTM parameters from URL
         utmParams = getUTMParams();
     }

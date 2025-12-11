@@ -1613,3 +1613,98 @@ body {
         justify-content: flex-start;
     }
 }
+
+/* Cookie Consent Banner */
+.cookie-banner {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    max-width: 900px;
+    width: calc(100% - 48px);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.cookie-content {
+    background: rgba(16, 19, 24, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(250, 155, 46, 0.2);
+    border-radius: 20px;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                0 0 1px rgba(250, 155, 46, 0.1) inset;
+}
+
+.cookie-text {
+    font-family: 'Spoof', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-white);
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+}
+
+.cookie-dismiss {
+    font-family: 'Spoof', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dark-bg);
+    background: linear-gradient(135deg, var(--primary-orange) 0%, var(--orange-light) 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 10px 24px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(250, 155, 46, 0.25);
+}
+
+.cookie-dismiss:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(250, 155, 46, 0.35);
+}
+
+.cookie-dismiss:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .cookie-banner {
+        bottom: 16px;
+        width: calc(100% - 32px);
+    }
+    
+    .cookie-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        gap: 16px;
+    }
+    
+    .cookie-text {
+        font-size: 13px;
+    }
+    
+    .cookie-dismiss {
+        width: 100%;
+        padding: 12px 24px;
+    }
+}
