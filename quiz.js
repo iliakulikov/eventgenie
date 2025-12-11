@@ -18,15 +18,35 @@
     
     let currentScreen = 1;
     let formData = {};
+    let utmParams = '';
 
     // Google Sheets Configuration
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK1Ejj6wtzjGGymCry83q8IM_dMiZJ73CxY8FcPNp0YZPa1zyW_RqfK971c9kiqduN/exec';
+
+    // Extract UTM parameters from URL
+    function getUTMParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+        const utms = [];
+        
+        utmKeys.forEach(key => {
+            const value = urlParams.get(key);
+            if (value) {
+                utms.push(`${key}=${value}`);
+            }
+        });
+        
+        return utms.join('&');
+    }
 
     // Open Modal
     function openModal() {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         showScreen(1);
+        
+        // Capture UTM parameters from URL
+        utmParams = getUTMParams();
     }
 
     // Close Modal
@@ -134,6 +154,7 @@
         formData.append('phone', data.phone || '');
         formData.append('email', data.email || '');
         formData.append('payment_confirmed', paymentStatus); // 'Pending', 'Yes', or 'No'
+        formData.append('utm', utmParams || '');
 
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -286,12 +307,18 @@
             <div class="quiz-final-message-icon">${icon}</div>
             <h2 class="quiz-final-message-title">${title}</h2>
             <p class="quiz-final-message-text">${text}</p>
-            <button class="quiz-final-message-button" onclick="document.getElementById('quizModal').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('quizForm').reset(); document.querySelectorAll('.quiz-screen').forEach(s => s.classList.remove('active')); document.querySelector('.quiz-screen[data-screen=\"1\"]').classList.add('active');">Close</button>
+            <button class="quiz-final-message-button">Close</button>
         `;
         
         // Hide success content and show final message
         successContent.style.display = 'none';
         currentScreenElement.appendChild(finalMessage);
+        
+        // Add event listener to the close button
+        const closeButton = finalMessage.querySelector('.quiz-final-message-button');
+        closeButton.addEventListener('click', () => {
+            closeModal();
+        });
     }
 
     // Input validation styling
