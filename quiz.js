@@ -234,7 +234,10 @@
                     
                     // Track Meta Lead event
                     if (typeof fbq !== 'undefined') {
+                        console.log('Tracking Meta Lead event');
                         fbq('track', 'Lead');
+                    } else {
+                        console.warn('Meta Pixel (fbq) not loaded');
                     }
                     
                     // Remove loading state
