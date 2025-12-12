@@ -232,6 +232,11 @@
                     // Send initial submission with "Pending" status
                     await sendToGoogleSheets(formData, 'Pending');
                     
+                    // Track Meta Lead event
+                    if (typeof fbq !== 'undefined') {
+                        fbq('track', 'Lead');
+                    }
+                    
                     // Remove loading state
                     button.classList.remove('loading');
                     button.disabled = false;
