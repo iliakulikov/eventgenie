@@ -19,9 +19,79 @@
     let currentScreen = 1;
     let formData = {};
     let utmParams = '';
+    let hasClaimedDiscount = false;  // Track if user claimed the discount
 
     // Google Sheets Configuration
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK1Ejj6wtzjGGymCry83q8IM_dMiZJ73CxY8FcPNp0YZPa1zyW_RqfK971c9kiqduN/exec';
+
+    // Museum Events Data
+    const museumEvents = [
+        {
+            id: 1,
+            name: 'Natural History Museum',
+            icon: '🦕',
+            date: 'Wednesday, January 7',
+            time: '7:00 PM',
+            description: 'Discover millions of years of natural history. Walk through the iconic Hintze Hall, marvel at the blue whale, and explore dinosaur fossils in this architectural masterpiece.',
+            images: [
+                'img/museum-popup-1.webp',
+                'img/museum-popup-2.webp',
+                'img/museum-popup-3.webp'
+            ]
+        },
+        {
+            id: 2,
+            name: 'Tate Modern',
+            icon: '🎨',
+            date: 'Saturday, January 10',
+            time: '3:00 PM',
+            description: 'Experience contemporary art in a stunning former power station. From Picasso to modern installations, explore groundbreaking works that challenge and inspire.',
+            images: [
+                'img/museum-popup-1.webp',
+                'img/museum-popup-2.webp',
+                'img/museum-popup-3.webp'
+            ]
+        },
+        {
+            id: 3,
+            name: 'British Museum',
+            icon: '🏛️',
+            date: 'Wednesday, January 14',
+            time: '7:00 PM',
+            description: 'Journey through two million years of human history and culture. From the Rosetta Stone to Egyptian mummies, experience treasures from every corner of the ancient world.',
+            images: [
+                'img/museum-popup-1.webp',
+                'img/museum-popup-2.webp',
+                'img/museum-popup-3.webp'
+            ]
+        },
+        {
+            id: 4,
+            name: 'V&A Museum',
+            icon: '👑',
+            date: 'Sunday, January 18',
+            time: '2:00 PM',
+            description: 'The world\'s leading museum of art, design, and performance. Discover 5,000 years of creativity, from fashion and furniture to sculpture and photography.',
+            images: [
+                'img/museum-popup-1.webp',
+                'img/museum-popup-2.webp',
+                'img/museum-popup-3.webp'
+            ]
+        },
+        {
+            id: 5,
+            name: 'Science Museum',
+            icon: '🚀',
+            date: 'Friday, January 23',
+            time: '6:30 PM',
+            description: 'Explore the wonders of science and technology. From space exploration to medical breakthroughs, engage with interactive exhibits that bring scientific discovery to life.',
+            images: [
+                'img/museum-popup-1.webp',
+                'img/museum-popup-2.webp',
+                'img/museum-popup-3.webp'
+            ]
+        }
+    ];
 
     // Extract UTM parameters from URL
     function getUTMParams() {
@@ -264,13 +334,14 @@
             const success = await sendToGoogleSheets(formData, 'Yes');
             
             if (success) {
-                // Show success message in modal
-                showFinalMessage(
-                    '✨',
-                    'You\'re All Set!',
-                    'Thank you! Your group has been confirmed. We will contact you shortly with all the details for this Saturday\'s experience.',
-                    'success'
-                );
+                // Show discount popup after brief delay
+                setTimeout(() => {
+                    showDiscountPopup();
+                    // Move to event booking screen
+                    showScreen(5);
+                    populateUserName();
+                    renderEventCards();
+                }, 500);
             } else {
                 // Re-enable buttons on error
                 confirmYesBtn.classList.remove('loading');
@@ -308,6 +379,164 @@
             }
         });
     }
+
+    // Populate user's first name
+    function populateUserName() {
+        const userFirstNameElement = document.getElementById('userFirstName');
+        if (userFirstNameElement && formData.first_name) {
+            userFirstNameElement.textContent = formData.first_name;
+        }
+    }
+
+    // Render event cards
+    function renderEventCards() {
+        const eventCardsContainer = document.getElementById('eventCards');
+        if (!eventCardsContainer) return;
+
+        eventCardsContainer.innerHTML = museumEvents.map(event => `
+            <div class="event-card" data-event-id="${event.id}">
+                <div class="event-card-icon">${event.icon}</div>
+                <div class="event-card-content">
+                    <h4 class="event-card-title">${event.name}</h4>
+                    <p class="event-card-time">${event.date} • ${event.time}</p>
+                </div>
+                <div class="event-card-arrow">→</div>
+            </div>
+        `).join('');
+
+        // Add click handlers to event cards
+        document.querySelectorAll('.event-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const eventId = parseInt(card.dataset.eventId);
+                showEventDetail(eventId);
+            });
+        });
+    }
+
+    // Show discount popup
+    function showDiscountPopup() {
+        const discountPopup = document.getElementById('discountPopup');
+        if (discountPopup) {
+            discountPopup.classList.add('active');
+        }
+    }
+
+    // Hide discount popup
+    function hideDiscountPopup() {
+        const discountPopup = document.getElementById('discountPopup');
+        if (discountPopup) {
+            discountPopup.classList.remove('active');
+        }
+    }
+
+    // Show event detail
+    function showEventDetail(eventId) {
+        const event = museumEvents.find(e => e.id === eventId);
+        if (!event) return;
+
+        const modal = document.getElementById('eventDetailModal');
+        const title = document.getElementById('eventDetailTitle');
+        const description = document.getElementById('eventDetailDescription');
+        const images = document.getElementById('eventDetailImages');
+
+        if (title) title.textContent = event.name;
+        if (description) description.textContent = event.description;
+        if (images) {
+            images.innerHTML = event.images.map(img => 
+                `<img src="${img}" alt="${event.name}" class="event-detail-image">`
+            ).join('');
+        }
+
+        if (modal) modal.classList.add('active');
+    }
+
+    // Hide event detail
+    function hideEventDetail() {
+        const modal = document.getElementById('eventDetailModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    // Discount popup event handlers
+    const discountPopupClose = document.getElementById('discountPopupClose');
+    const claimDiscountBtn = document.getElementById('claimDiscountBtn');
+    const skipDiscountBtn = document.getElementById('skipDiscountBtn');
+
+    if (discountPopupClose) {
+        discountPopupClose.addEventListener('click', hideDiscountPopup);
+    }
+
+    if (claimDiscountBtn) {
+        claimDiscountBtn.addEventListener('click', () => {
+            // Mark discount as claimed
+            hasClaimedDiscount = true;
+            hideDiscountPopup();
+            // Continue to next screen and show promo box
+            showScreen(5);
+            populateUserName();
+            renderEventCards();
+        });
+    }
+
+    if (skipDiscountBtn) {
+        skipDiscountBtn.addEventListener('click', () => {
+            hasClaimedDiscount = false;
+            hideDiscountPopup();
+            // Continue to next screen without showing promo
+            showScreen(5);
+            populateUserName();
+            renderEventCards();
+        });
+    }
+
+    // Event detail modal handlers
+    const eventDetailClose = document.getElementById('eventDetailClose');
+    const bookEventBtn = document.getElementById('bookEventBtn');
+
+    if (eventDetailClose) {
+        eventDetailClose.addEventListener('click', hideEventDetail);
+    }
+
+    if (bookEventBtn) {
+        bookEventBtn.addEventListener('click', () => {
+            hideEventDetail();
+            showScreen(6);
+            // Show promo box if discount was claimed
+            if (hasClaimedDiscount) {
+                const promoBox = document.getElementById('promoCodeBox');
+                if (promoBox) {
+                    promoBox.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // Plans Continue button
+    const plansContinueBtn = document.getElementById('plansContinueBtn');
+    if (plansContinueBtn) {
+        plansContinueBtn.addEventListener('click', () => {
+            const selectedPlan = document.querySelector('input[name="subscription_plan"]:checked');
+            if (selectedPlan) {
+                console.log('Selected plan:', selectedPlan.value);
+                // Redirect to Stripe
+                window.open('https://stripe.com', '_blank');
+            }
+        });
+    }
+
+    // Close popups on overlay click
+    document.getElementById('discountPopup')?.addEventListener('click', (e) => {
+        if (e.target.id === 'discountPopup') {
+            hideDiscountPopup();
+        }
+    });
+
+    document.getElementById('eventDetailModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'eventDetailModal') {
+            hideEventDetail();
+        }
+    });
 
     // Show final message function
     function showFinalMessage(icon, title, text, type) {
