@@ -497,94 +497,15 @@
                         <div class="quiz-payment-box">
                             <p class="quiz-payment-text">💡 The event organization fee is £9.99 per event or £13.99 per month subscription. Are you willing to confirm your spot?</p>
                             <div class="quiz-payment-options">
-                                <button type="button" class="quiz-payment-button yes" id="confirmYes">Yes, take me to payment</button>
+                                <button type="button" class="quiz-payment-button yes" id="confirmYes">Yes</button>
                                 <button type="button" class="quiz-payment-button no" id="confirmNo">No</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Screen 5: Event Booking -->
-                <div class="quiz-screen" data-screen="5">
-                    <div class="event-booking-container">
-                        <div class="booking-header">
-                            <h1 class="booking-greeting">Hey <span id="userFirstName"></span> 👋</h1>
-                            <h2 class="booking-title">Meet people in<br><span class="booking-location">London</span></h2>
-                        </div>
-
-                        <div class="booking-section">
-                            <h3 class="booking-section-title">Book your next event</h3>
-                            
-                            <div class="event-cards" id="eventCards">
-                                <!-- Events will be dynamically loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Screen 6: Subscription Plans -->
-                <div class="quiz-screen" data-screen="6">
-                    <div class="plans-container">
-                        <h2 class="plans-title">Choose your plan</h2>
-                        
-                        <div class="plan-options">
-                            <label class="plan-option" data-plan="1-month">
-                                <input type="radio" name="subscription_plan" value="1-month" checked>
-                                <div class="plan-content">
-                                    <div class="plan-header">
-                                        <span class="plan-duration">1 Month</span>
-                                    </div>
-                                    <div class="plan-description">Pay per event</div>
-                                    <div class="plan-price">£9.99<span class="plan-frequency">/event</span></div>
-                                </div>
-                            </label>
-                            
-                            <label class="plan-option" data-plan="3-months">
-                                <input type="radio" name="subscription_plan" value="3-months">
-                                <div class="plan-content">
-                                    <div class="plan-header">
-                                        <span class="plan-duration">3 Months</span>
-                                        <span class="plan-badge">Save 20%</span>
-                                    </div>
-                                    <div class="plan-description">Unlimited events</div>
-                                    <div class="plan-prices">
-                                        <span class="plan-price">£33.59</span>
-                                        <span class="plan-frequency">/3 months</span>
-                                    </div>
-                                </div>
-                            </label>
-                            
-                            <label class="plan-option" data-plan="6-months">
-                                <input type="radio" name="subscription_plan" value="6-months">
-                                <div class="plan-content">
-                                    <div class="plan-header">
-                                        <span class="plan-duration">6 Months</span>
-                                        <span class="plan-badge">Save 40%</span>
-                                    </div>
-                                    <div class="plan-description">Unlimited events</div>
-                                    <div class="plan-prices">
-                                        <span class="plan-price">£59.94</span>
-                                        <span class="plan-frequency">/6 months</span>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-
-                        <!-- Promo Code Box -->
-                        <div class="promo-code-box" id="promoCodeBox" style="display: none;">
-                            <div class="promo-code-content">
-                                <span class="promo-code-icon">✓</span>
-                                <div class="promo-code-info">
-                                    <p class="promo-code-label">Promo Code Applied</p>
-                                    <p class="promo-code-value" id="promoCodeValue">WELCOME</p>
-                                </div>
-                                <div class="promo-code-discount" id="promoCodeDiscount">-10%</div>
-                            </div>
-                        </div>
-                        
-                        <button type="button" class="plans-continue-btn" id="plansContinueBtn">Continue to Payment</button>
-                    </div>
-                </div>
+                <!-- Screen 5: Event Booking - MOVED TO /payment.html -->
+                <!-- Screen 6: Subscription Plans - MOVED TO /payment.html -->
             </form>
         </div>
     </div>

@@ -334,14 +334,13 @@
             const success = await sendToGoogleSheets(formData, 'Yes');
             
             if (success) {
-                // Show discount popup after brief delay
-                setTimeout(() => {
-                    showDiscountPopup();
-                    // Move to event booking screen
-                    showScreen(5);
-                    populateUserName();
-                    renderEventCards();
-                }, 500);
+                // Show thank you message in modal with contact notification
+                showFinalMessage(
+                    '💙',
+                    'Thank You!',
+                    'We\'ll get in contact with you soon. Our team will reach out via email to confirm your spot and provide payment details.',
+                    'success'
+                );
             } else {
                 // Re-enable buttons on error
                 confirmYesBtn.classList.remove('loading');
