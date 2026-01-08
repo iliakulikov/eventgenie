@@ -2620,12 +2620,25 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    position: relative;
 }
 
 .date-card-icon img {
-    width: 50%;
-    height: 50%;
+    width: 70%;
+    height: 70%;
     object-fit: contain;
+}
+
+.date-card-day {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #121417;
+    font-size: 16px;
+    transform: translateY(4px);
 }
 
 .date-card.selected {

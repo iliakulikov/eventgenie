@@ -322,6 +322,7 @@
                 <input type="radio" name="event_date" value="${index}" class="date-card-radio">
                 <div class="date-card-icon">
                     <img src="img/calendar-icon.webp" alt="Calendar">
+                    <span class="date-card-day">${date.date.match(/\d+/)?.[0] || ''}</span>
                 </div>
                 <div class="date-card-content">
                     <div class="date-card-label">${date.label}</div>
