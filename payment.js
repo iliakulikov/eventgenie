@@ -221,8 +221,14 @@
         const dateCards = document.querySelectorAll('.date-card');
         dateCards.forEach(card => {
             card.addEventListener('click', () => {
+                // Remove selected class from all cards
+                dateCards.forEach(c => c.classList.remove('selected'));
+                
+                // Add selected class to clicked card
+                card.classList.add('selected');
+                
                 const radio = card.querySelector('input[type="radio"]');
-                const dateIndex = parseInt(radio.value);
+                const dateIndex = parseInt(card.dataset.dateIndex);
                 radio.checked = true;
                 formData.selected_date = eventDates[dateIndex];
                 
@@ -312,14 +318,17 @@
         if (!dateCardsContainer) return;
 
         dateCardsContainer.innerHTML = eventDates.map((date, index) => `
-            <label class="date-card">
+            <div class="date-card" data-date-index="${index}">
                 <input type="radio" name="event_date" value="${index}" class="date-card-radio">
+                <div class="date-card-icon">
+                    <img src="img/calendar-icon.webp" alt="Calendar">
+                </div>
                 <div class="date-card-content">
                     <div class="date-card-label">${date.label}</div>
                     <div class="date-card-time">${date.date}, ${date.time}</div>
                 </div>
                 <div class="date-card-arrow">→</div>
-            </label>
+            </div>
         `).join('');
     }
 
