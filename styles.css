@@ -2813,17 +2813,6 @@ body {
     top: 14px;
     transform: none;
 }
-    background: #86efac;
-    color: #14532d;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 8px;
-    position: absolute;
-    right: 16px;
-    top: 14px;
-    transform: none;
-}
 
 /* Step Button */
 .payment-step-button {

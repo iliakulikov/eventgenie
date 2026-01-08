@@ -222,8 +222,16 @@
         dateCards.forEach(card => {
             card.addEventListener('click', () => {
                 const radio = card.querySelector('input[type="radio"]');
+                const dateIndex = parseInt(radio.value);
                 radio.checked = true;
-                formData.selected_date = radio.value;
+                formData.selected_date = eventDates[dateIndex];
+                
+                // Update Step 2 header with selected date
+                const dateDisplay = document.getElementById('selectedDateDisplay');
+                if (dateDisplay && formData.selected_date) {
+                    dateDisplay.textContent = `📅 ${formData.selected_date.date} at ${formData.selected_date.time}`;
+                }
+                
                 goToStep(2);
             });
         });
@@ -335,7 +343,6 @@
                 <div class="event-card-icon">${event.icon}</div>
                 <div class="event-card-content">
                     <h4 class="event-card-title">${event.name}</h4>
-                    <p class="event-card-time">${event.date} • ${event.time}</p>
                 </div>
                 <div class="event-card-arrow">→</div>
             </label>
