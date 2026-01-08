@@ -2789,6 +2789,12 @@ body {
     font-weight: 500;
 }
 
+/* Single event price positioning in grid (when not inside plan-pricing) */
+.plan-content > .plan-price {
+    grid-column: 2;
+    grid-row: 2;
+}
+
 .plan-price-was {
     font-size: 14px;
     color: var(--text-gray);
