@@ -2174,29 +2174,30 @@ body {
 }
 
 .plan-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
+    position: static;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .plan-content {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 24px;
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
     transition: all 0.3s ease;
 }
 
 .plan-option input[type="radio"]:checked + .plan-content {
-    background: rgba(250, 155, 46, 0.1);
-    border-color: var(--primary-orange);
-    box-shadow: 0 8px 32px rgba(250, 155, 46, 0.2);
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 .plan-option:hover .plan-content {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(250, 155, 46, 0.5);
+    background: transparent;
+    border: none;
 }
 
 .plan-header {
@@ -2459,7 +2460,7 @@ body {
 
 .payment-steps-container {
     flex: 1;
-    padding: 48px 24px;
+    padding: 24px;
 }
 
 .payment-step {
@@ -2474,25 +2475,29 @@ body {
 }
 
 .payment-step-back {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     color: var(--text-white);
     cursor: pointer;
-    padding: 8px;
-    display: flex;
+    padding: 8px 16px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     margin-bottom: 24px;
-    opacity: 0.7;
-    transition: opacity 0.2s;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .payment-step-back:hover {
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 .payment-step-header {
-    margin-bottom: 48px;
+    margin-bottom: 32px;
 }
 
 .payment-step-label {
@@ -2516,7 +2521,7 @@ body {
 }
 
 .payment-section {
-    margin-bottom: 32px;
+    margin-bottom: 0;
 }
 
 /* Event Cards */
@@ -2563,8 +2568,85 @@ body {
 }
 
 .event-card-arrow {
-    color: var(--beige-primary);
-    transition: opacity 0.2s;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-orange), var(--purple));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.event-card:hover .event-card-arrow {
+    transform: translateX(4px);
+    box-shadow: 0 8px 20px rgba(250, 155, 46, 0.4);
+}
+
+/* Date Cards */
+.date-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.date-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-orange);
+}
+
+.date-card-radio {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    cursor: pointer;
+    accent-color: var(--primary-orange);
+}
+
+.date-card-content {
+    flex: 1;
+}
+
+.date-card-label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.date-card-time {
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+.date-card-arrow {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-orange), var(--purple));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.date-card:hover .date-card-arrow {
+    transform: translateX(4px);
+    box-shadow: 0 8px 20px rgba(250, 155, 46, 0.4);
 }
 
 .event-card:hover .event-card-arrow {
@@ -2639,70 +2721,108 @@ body {
 .plan-options {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 32px;
 }
 
 .plan-option {
-    display: block;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px 12px;
+    align-items: start;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: none;
+    border-radius: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
 }
 
 .plan-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
     accent-color: var(--primary-orange);
+    flex-shrink: 0;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
 }
 
 .plan-option:has(input[type="radio"]:checked) {
-    background: rgba(250, 155, 46, 0.1);
-    border-color: var(--primary-orange);
+    background: rgba(250, 155, 46, 0.08);
+    box-shadow: 0 0 0 2px var(--primary-orange);
 }
 
 .plan-option:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(250, 155, 46, 0.5);
+    box-shadow: none;
 }
 
-.plan-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
+.plan-content {
+    display: contents;
 }
 
 .plan-duration {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
+    min-width: 110px;
+    grid-column: 2;
+    grid-row: 1;
 }
 
-.plan-badge {
-    background: linear-gradient(135deg, var(--primary-orange), var(--orange-light));
-    color: var(--dark-bg);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
-.plan-description {
-    font-size: 14px;
-    color: var(--text-gray);
-    margin-bottom: 8px;
+.plan-pricing {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    width: 100%;
+    grid-column: 2;
+    grid-row: 2;
 }
 
 .plan-price {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 500;
 }
 
-.plan-frequency {
+.plan-price-was {
     font-size: 14px;
     color: var(--text-gray);
-    margin-left: 4px;
+    text-decoration: line-through;
+}
+
+.plan-weekly {
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.plan-badge {
+    background: #86efac;
+    color: #14532d;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    transform: none;
+}
+    background: #86efac;
+    color: #14532d;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    transform: none;
 }
 
 /* Step Button */
@@ -2947,6 +3067,8 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
+        min-height: auto;
+        padding: 32px;
     }
 
     .payment-steps-container {
@@ -2956,14 +3078,14 @@ body {
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 24px;
-        padding: 48px 32px;
-        margin: 64px 32px;
+        padding: 32px 32px 24px;
+        margin: 0;
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
     }
 
     .payment-step-header {
         text-align: center;
-        margin-bottom: 48px;
+        margin-bottom: 32px;
     }
 
     .payment-step-title {
@@ -2971,9 +3093,7 @@ body {
     }
 
     .payment-step-back {
-        position: absolute;
-        top: 48px;
-        left: 32px;
+        margin: 0 auto 24px;
     }
 
     .event-cards {
@@ -3002,7 +3122,38 @@ body {
     }
 
     .plan-option {
-        padding: 24px;
+        flex-direction: row;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 18px 22px;
+    }
+
+    .plan-option input[type="radio"] {
+        margin-right: 16px;
+        margin-bottom: 0;
+        margin-top: 2px;
+        grid-column: initial;
+        grid-row: initial;
+    }
+
+    .plan-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        flex: 1;
+        position: relative;
+    }
+
+    .plan-duration {
+        grid-column: initial;
+        grid-row: initial;
+    }
+
+    .plan-pricing {
+        grid-column: initial;
+        grid-row: initial;
     }
 
     .testimonial-cards {

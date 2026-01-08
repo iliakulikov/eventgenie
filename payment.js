@@ -16,6 +16,16 @@
 
     // Progress fill
     const progressFill = document.getElementById('paymentProgressFill');
+
+    // Event dates
+    const eventDates = [
+        { label: 'Thursday Evening', date: '22 January', time: '7:00 PM' },
+        { label: 'Friday Evening', date: '23 January', time: '7:00 PM' },
+        { label: 'Saturday Evening', date: '24 January', time: '7:00 PM' },
+        { label: 'Thursday Evening', date: '29 January', time: '7:00 PM' },
+        { label: 'Friday Evening', date: '30 January', time: '7:00 PM' },
+        { label: 'Saturday Evening', date: '31 January', time: '7:00 PM' }
+    ];
     const museumEvents = [
         {
             id: 1,
@@ -160,13 +170,37 @@
         console.log('URL vibe parameter:', vibe);
         console.log('Available vibes in museums:', [...new Set(museumEvents.map(m => m.vibe))]);
 
-        // Populate user name and render events based on vibe
-        populateUserName();
+        // Store vibe in formData
+        if (vibe) {
+            formData.vibe = vibe;
+        }
+
+        // Update vibe subtitle on Step 1
+        updateVibeSubtitle(vibe);
+
+        // Render dates and museums based on vibe
+        renderDateCards();
         renderEventCards(vibe);
 
         // Setup event handlers
         setupEventHandlers();
         setupStepNavigation();
+    }
+
+    // Update vibe subtitle
+    function updateVibeSubtitle(vibe) {
+        const vibeSubtitle = document.getElementById('vibeSubtitle');
+        if (!vibeSubtitle) return;
+
+        const vibeLabels = {
+            'classic': 'Classic & Historical',
+            'modern': 'Modern & Provocative',
+            'visual': 'Photography & Visuals'
+        };
+
+        if (vibe && vibeLabels[vibe]) {
+            vibeSubtitle.textContent = 'Your preferred vibe: ' + vibeLabels[vibe];
+        }
     }
 
     // Setup step navigation
@@ -183,26 +217,37 @@
             backBtn3.addEventListener('click', () => goToStep(2));
         }
 
-        // Continue buttons
-        const eventCards = document.querySelectorAll('.event-card');
-        eventCards.forEach(card => {
+        // Date card clicks
+        const dateCards = document.querySelectorAll('.date-card');
+        dateCards.forEach(card => {
             card.addEventListener('click', () => {
-                // Store selected museum
-                formData.selected_museum = card.querySelector('.event-card-title').textContent;
+                const radio = card.querySelector('input[type="radio"]');
+                radio.checked = true;
+                formData.selected_date = radio.value;
                 goToStep(2);
             });
         });
 
-        const continueBtn2 = document.getElementById('continueBtn2');
-        if (continueBtn2) {
-            continueBtn2.addEventListener('click', () => {
-                const selectedLocation = document.querySelector('input[name="location"]:checked');
-                if (selectedLocation) {
-                    formData.location = selectedLocation.value;
-                    goToStep(3);
-                }
+        // Event card clicks
+        const eventCards = document.querySelectorAll('.event-card');
+        eventCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const radio = card.querySelector('input[type="radio"]');
+                radio.checked = true;
+                formData.selected_museum = card.querySelector('.event-card-title').textContent;
+                goToStep(3);
             });
-        }
+        });
+
+        // Plan selection
+        const planRadios = document.querySelectorAll('input[name="subscription_plan"]');
+        planRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                formData.subscription_plan = e.target.value;
+                console.log('User selected plan:', e.target.value);
+                // When ready: submitPaymentData();
+            });
+        });
     }
 
     // Go to specific step
@@ -253,6 +298,23 @@
         }
     }
 
+    // Render date cards
+    function renderDateCards() {
+        const dateCardsContainer = document.getElementById('dateCards');
+        if (!dateCardsContainer) return;
+
+        dateCardsContainer.innerHTML = eventDates.map((date, index) => `
+            <label class="date-card">
+                <input type="radio" name="event_date" value="${index}" class="date-card-radio">
+                <div class="date-card-content">
+                    <div class="date-card-label">${date.label}</div>
+                    <div class="date-card-time">${date.date}, ${date.time}</div>
+                </div>
+                <div class="date-card-arrow">→</div>
+            </label>
+        `).join('');
+    }
+
     // Render event cards
     function renderEventCards(vibe = null) {
         const eventCardsContainer = document.getElementById('eventCards');
@@ -267,18 +329,17 @@
         console.log('Museums found:', eventsToDisplay.length);
         console.log('Museums:', eventsToDisplay.map(m => ({ name: m.name, vibe: m.vibe })));
 
-        eventCardsContainer.innerHTML = eventsToDisplay.map(event => `
-            <div class="event-card" data-event-id="${event.id}">
+        eventCardsContainer.innerHTML = eventsToDisplay.map((event, index) => `
+            <label class="event-card" data-event-id="${event.id}">
+                <input type="radio" name="museum" value="${index}" class="event-card-radio" style="display: none;">
                 <div class="event-card-icon">${event.icon}</div>
                 <div class="event-card-content">
                     <h4 class="event-card-title">${event.name}</h4>
                     <p class="event-card-time">${event.date} • ${event.time}</p>
                 </div>
                 <div class="event-card-arrow">→</div>
-            </div>
+            </label>
         `).join('');
-
-        // Event card clicks are handled by setupStepNavigation
     }
 
     // Hide event detail modal

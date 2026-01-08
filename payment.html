@@ -55,17 +55,18 @@
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
+                    <span>Back</span>
                 </button>
                 
                 <div class="payment-step-header">
-                    <p class="payment-step-label">Step 1 of 3</p>
-                    <h2 class="payment-step-title">Choose your exhibition</h2>
-                    <p class="payment-step-subtitle">Select the museum you'd like to visit</p>
+                    <h2 class="payment-step-title">Meet people in London</h2>
+                    <p class="payment-step-subtitle" id="vibeSubtitle">Your preferred vibe: Classic & Historical</p>
+                    <p class="payment-step-subtitle">Book your next event</p>
                 </div>
 
                 <div class="payment-section">
-                    <div class="event-cards" id="eventCards">
-                        <!-- Events will be dynamically loaded here -->
+                    <div class="date-cards" id="dateCards">
+                        <!-- Dates will be dynamically loaded here -->
                     </div>
                 </div>
             </section>
@@ -76,60 +77,19 @@
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
+                    <span>Back</span>
                 </button>
                 
                 <div class="payment-step-header">
-                    <p class="payment-step-label">Step 2 of 3</p>
-                    <h2 class="payment-step-title">Where would you like to attend?</h2>
-                    <p class="payment-step-subtitle">In London</p>
+                    <h2 class="payment-step-title">Select your museum</h2>
+                    <p class="payment-step-subtitle">Choose the exhibition you'd like to visit</p>
                 </div>
 
-                <div class="payment-location-info">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
-                        <text x="12" y="14" text-anchor="middle" font-size="14" font-weight="500">i</text>
-                    </svg>
-                    <p>This event does not take place in all areas.</p>
+                <div class="payment-section">
+                    <div class="event-cards" id="eventCards">
+                        <!-- Museums will be dynamically loaded here -->
+                    </div>
                 </div>
-
-                <form id="locationForm" class="payment-location-form">
-                    <label class="payment-location-option">
-                        <input type="radio" name="location" value="soho" required>
-                        <span class="location-label">Soho</span>
-                    </label>
-                    
-                    <label class="payment-location-option">
-                        <input type="radio" name="location" value="chelsea">
-                        <span class="location-label">Chelsea / South Kensington</span>
-                    </label>
-                    
-                    <label class="payment-location-option">
-                        <input type="radio" name="location" value="clapham">
-                        <span class="location-label">Clapham</span>
-                    </label>
-                    
-                    <label class="payment-location-option">
-                        <input type="radio" name="location" value="london-bridge">
-                        <span class="location-label">London Bridge</span>
-                    </label>
-                    
-                    <label class="payment-location-option">
-                        <input type="radio" name="location" value="shoreditch">
-                        <span class="location-label">Shoreditch / Hoxton</span>
-                    </label>
-                    
-                    <label class="payment-location-option">
-                        <input type="radio" name="location" value="city">
-                        <span class="location-label">The City</span>
-                    </label>
-
-                    <button type="button" class="payment-step-button" id="continueBtn2">
-                        Continue
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                </form>
             </section>
 
             <!-- Step 3: Select Subscription Plan -->
@@ -138,69 +98,61 @@
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
+                    <span>Back</span>
                 </button>
                 
                 <div class="payment-step-header">
-                    <p class="payment-step-label">Step 3 of 3</p>
                     <h2 class="payment-step-title">Choose your plan</h2>
                 </div>
 
                 <form id="subscriptionForm" class="payment-plans-form">
                     <div class="plan-options">
-                        <label class="plan-option" data-plan="1-month">
-                            <input type="radio" name="subscription_plan" value="1-month" checked>
+                        <label class="plan-option" data-plan="pay-per-event">
+                            <input type="radio" name="subscription_plan" value="pay-per-event" checked>
                             <div class="plan-content">
-                                <div class="plan-header">
-                                    <span class="plan-duration">1 Month</span>
+                                <span class="plan-duration">Single Event</span>
+                                <span class="plan-price">£9.99</span>
+                            </div>
+                        </label>
+
+                        <label class="plan-option" data-plan="1-month">
+                            <input type="radio" name="subscription_plan" value="1-month">
+                            <div class="plan-content">
+                                <span class="plan-duration">1 Month</span>
+                                <div class="plan-pricing">
+                                    <span class="plan-price">£13.99</span>
+                                    <span class="plan-weekly">£3.50/week</span>
                                 </div>
-                                <div class="plan-description">Pay per event</div>
-                                <div class="plan-price">£9.99<span class="plan-frequency">/event</span></div>
                             </div>
                         </label>
                         
                         <label class="plan-option" data-plan="3-months">
                             <input type="radio" name="subscription_plan" value="3-months">
                             <div class="plan-content">
-                                <div class="plan-header">
-                                    <span class="plan-duration">3 Months</span>
-                                    <span class="plan-badge">Save 20%</span>
-                                </div>
-                                <div class="plan-description">Unlimited events</div>
-                                <div class="plan-prices">
-                                    <span class="plan-price">£33.59</span>
-                                    <span class="plan-frequency">/3 months</span>
+                                <span class="plan-duration">3 Months</span>
+                                <div class="plan-pricing">
+                                    <span class="plan-price-was">£41.97</span>
+                                    <span class="plan-price">£32.99</span>
+                                    <span class="plan-weekly">£2.75/week</span>
                                 </div>
                             </div>
+                            <span class="plan-badge">Save 21%</span>
                         </label>
                         
                         <label class="plan-option" data-plan="6-months">
                             <input type="radio" name="subscription_plan" value="6-months">
                             <div class="plan-content">
-                                <div class="plan-header">
-                                    <span class="plan-duration">6 Months</span>
-                                    <span class="plan-badge">Save 40%</span>
-                                </div>
-                                <div class="plan-description">Unlimited events</div>
-                                <div class="plan-prices">
-                                    <span class="plan-price">£59.94</span>
-                                    <span class="plan-frequency">/6 months</span>
+                                <span class="plan-duration">6 Months</span>
+                                <div class="plan-pricing">
+                                    <span class="plan-price-was">£93.94</span>
+                                    <span class="plan-price">£44.99</span>
+                                    <span class="plan-weekly">£1.87/week</span>
                                 </div>
                             </div>
+                            <span class="plan-badge">Save 46%</span>
                         </label>
                     </div>
 
-                    <!-- Promo Code Box -->
-                    <div class="promo-code-box" id="promoCodeBox" style="display: none;">
-                        <div class="promo-code-content">
-                            <span class="promo-code-icon">✓</span>
-                            <div class="promo-code-info">
-                                <p class="promo-code-label">Promo Code Applied</p>
-                                <p class="promo-code-value" id="promoCodeValue">WELCOME</p>
-                            </div>
-                            <div class="promo-code-discount" id="promoCodeDiscount">-10%</div>
-                        </div>
-                    </div>
-                    
                     <button type="button" class="payment-step-button plans-continue-btn" id="plansContinueBtn">
                         Continue to Payment
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
