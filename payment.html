@@ -60,7 +60,17 @@
                 
                 <div class="payment-step-header">
                     <h2 class="payment-step-title">Meet people in London</h2>
-                    <p class="payment-step-subtitle" id="vibeSubtitle">Your preferred vibe: <span class="vibe-highlight">Classic & Historical</span></p>
+                    <div class="payment-step-subtitle vibe-selector" id="vibeSubtitle">
+                        <span>Your preferred vibe:</span>
+                        <button type="button" class="vibe-highlight vibe-toggle" id="vibeToggle" aria-haspopup="listbox" aria-expanded="false" data-vibe="classic">
+                            Classic &amp; Historical
+                        </button>
+                        <div class="vibe-dropdown" id="vibeDropdown" role="listbox">
+                            <button type="button" class="vibe-option" data-vibe="classic" aria-selected="true">Classic &amp; Historical</button>
+                            <button type="button" class="vibe-option" data-vibe="modern" aria-selected="false">Modern &amp; Provocative</button>
+                            <button type="button" class="vibe-option" data-vibe="visual" aria-selected="false">Photography &amp; Visuals</button>
+                        </div>
+                    </div>
                     <p class="payment-step-subtitle">Book your next event</p>
                 </div>
 
@@ -83,7 +93,7 @@
                 <div class="payment-step-header">
                     <h2 class="payment-step-title">Select your museum</h2>
                     <p class="payment-step-subtitle">Choose the venue you'd like to visit on</p>
-                    <p class="payment-step-subtitle date-highlight" id="selectedDateDisplay" style="font-size: 14px; color: white; margin-top: 8px;"></p>
+                    <p class="payment-step-subtitle date-highlight" id="selectedDateDisplay" style="color: #FFD580; margin-top: 8px; font: inherit;"></p>
                 </div>
 
                 <div class="payment-section">
@@ -110,7 +120,10 @@
                 <div class="payment-section">
                     <div class="confirmation-card">
                         <div class="confirmation-header">
-                            <div class="confirmation-icon">📅</div>
+                            <div class="confirmation-icon">
+                                <img src="img/calendar-icon.webp" alt="Calendar">
+                                <span class="confirmation-calendar-day" id="confirmCalendarDay"></span>
+                            </div>
                             <h3 class="confirmation-title">Your Event Details</h3>
                         </div>
                         

@@ -6,6 +6,11 @@
     let formData = {};
     let currentStep = 1;
     const totalSteps = 4;
+    const vibeLabels = {
+        'classic': 'Classic & Historical',
+        'modern': 'Modern & Provocative',
+        'visual': 'Photography & Visuals'
+    };
 
     // Step elements
     const steps = {
@@ -166,22 +171,23 @@
 
         // Get vibe from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const vibe = urlParams.get('vibe');
+        const rawVibe = urlParams.get('vibe');
+        const vibeFromUrl = (rawVibe && vibeLabels[rawVibe]) ? rawVibe : null;
         
-        console.log('URL vibe parameter:', vibe);
+        console.log('URL vibe parameter:', vibeFromUrl);
         console.log('Available vibes in museums:', [...new Set(museumEvents.map(m => m.vibe))]);
 
         // Store vibe in formData
-        if (vibe) {
-            formData.vibe = vibe;
+        if (vibeFromUrl) {
+            formData.vibe = vibeFromUrl;
         }
 
         // Update vibe subtitle on Step 1
-        updateVibeSubtitle(vibe);
+        updateVibeSubtitle(vibeFromUrl);
 
         // Render dates and museums based on vibe
         renderDateCards();
-        renderEventCards(vibe);
+        renderEventCards(vibeFromUrl);
 
         // Setup event handlers
         setupEventHandlers();
@@ -190,18 +196,92 @@
 
     // Update vibe subtitle
     function updateVibeSubtitle(vibe) {
-        const vibeSubtitle = document.getElementById('vibeSubtitle');
-        if (!vibeSubtitle) return;
+        const vibeToggle = document.getElementById('vibeToggle');
+        const vibeDropdown = document.getElementById('vibeDropdown');
+        if (!vibeToggle) return;
 
-        const vibeLabels = {
-            'classic': 'Classic & Historical',
-            'modern': 'Modern & Provocative',
-            'visual': 'Photography & Visuals'
+        const fallbackVibe = vibeToggle.dataset.vibe || 'classic';
+        const selectedVibe = (vibe && vibeLabels[vibe]) ? vibe : fallbackVibe;
+        const label = vibeLabels[selectedVibe] || vibeToggle.textContent.trim();
+
+        vibeToggle.textContent = label;
+        vibeToggle.dataset.vibe = selectedVibe;
+        formData.vibe = selectedVibe;
+
+        if (vibeDropdown) {
+            const options = vibeDropdown.querySelectorAll('.vibe-option');
+            options.forEach(option => {
+                const isActive = option.dataset.vibe === selectedVibe;
+                option.classList.toggle('active', isActive);
+                option.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+        }
+    }
+
+    function updateVibeInUrl(vibe) {
+        const url = new URL(window.location);
+        if (vibe && vibeLabels[vibe]) {
+            url.searchParams.set('vibe', vibe);
+        } else {
+            url.searchParams.delete('vibe');
+        }
+        history.replaceState({}, '', url);
+    }
+
+    function setVibe(vibe) {
+        if (!vibeLabels[vibe]) return;
+        updateVibeSubtitle(vibe);
+        renderEventCards(vibe);
+        updateVibeInUrl(vibe);
+    }
+
+    function setupVibeSelector() {
+        const vibeSelector = document.getElementById('vibeSubtitle');
+        const vibeToggle = document.getElementById('vibeToggle');
+        const vibeDropdown = document.getElementById('vibeDropdown');
+        if (!vibeSelector || !vibeToggle || !vibeDropdown) return;
+
+        const closeDropdown = () => {
+            vibeDropdown.classList.remove('open');
+            vibeToggle.setAttribute('aria-expanded', 'false');
         };
 
-        if (vibe && vibeLabels[vibe]) {
-            vibeSubtitle.innerHTML = 'Your preferred vibe: <span class="vibe-highlight">' + vibeLabels[vibe] + '</span>';
-        }
+        const openDropdown = () => {
+            vibeDropdown.classList.add('open');
+            vibeToggle.setAttribute('aria-expanded', 'true');
+        };
+
+        vibeToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isOpen = vibeDropdown.classList.contains('open');
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        });
+
+        const options = vibeDropdown.querySelectorAll('.vibe-option');
+        options.forEach(option => {
+            option.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const selectedVibe = option.dataset.vibe;
+                setVibe(selectedVibe);
+                closeDropdown();
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!vibeSelector.contains(event.target)) {
+                closeDropdown();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeDropdown();
+            }
+        });
     }
 
     // Setup step navigation
@@ -241,22 +321,16 @@
                 // Update Step 2 header with selected date
                 const dateDisplay = document.getElementById('selectedDateDisplay');
                 if (dateDisplay && formData.selected_date) {
-                    dateDisplay.textContent = `📅 ${formData.selected_date.date} at ${formData.selected_date.time}`;
+                    const day = (formData.selected_date.date.match(/\d+/) || [''])[0];
+                    dateDisplay.innerHTML = `
+                        <span class="inline-calendar">
+                            <img src="img/calendar-icon.webp" alt="Calendar">
+                            <span class="inline-calendar-day">${day}</span>
+                        </span>
+                        ${formData.selected_date.date} at ${formData.selected_date.time}`;
                 }
                 
                 goToStep(2);
-            });
-        });
-
-        // Event card clicks
-        const eventCards = document.querySelectorAll('.event-card');
-        eventCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const radio = card.querySelector('input[type="radio"]');
-                radio.checked = true;
-                formData.selected_museum = card.querySelector('.event-card-title').textContent;
-                populateConfirmationDetails();
-                goToStep(3);
             });
         });
 
@@ -318,18 +392,22 @@
 
         // Update vibe
         const confirmVibe = document.getElementById('confirmVibe');
-        const vibeLabels = {
-            'classic': 'Classic & Historical',
-            'modern': 'Modern & Provocative',
-            'visual': 'Photography & Visuals'
-        };
         if (confirmVibe && formData.vibe) {
             confirmVibe.textContent = vibeLabels[formData.vibe] || formData.vibe;
+        }
+
+        // Update confirmation calendar day overlay
+        const confirmCalendarDay = document.getElementById('confirmCalendarDay');
+        if (confirmCalendarDay && formData.selected_date) {
+            const day = (formData.selected_date.date.match(/\d+/) || [''])[0];
+            confirmCalendarDay.textContent = day || '';
         }
     }
 
     // Setup all event handlers
     function setupEventHandlers() {
+        setupVibeSelector();
+
         // Plans Continue button
         const plansContinueBtn = document.getElementById('plansContinueBtn');
         if (plansContinueBtn) {
@@ -398,6 +476,17 @@
                 <div class="event-card-arrow">→</div>
             </label>
         `).join('');
+
+        const eventCards = eventCardsContainer.querySelectorAll('.event-card');
+        eventCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const radio = card.querySelector('input[type="radio"]');
+                radio.checked = true;
+                formData.selected_museum = card.querySelector('.event-card-title').textContent;
+                populateConfirmationDetails();
+                goToStep(3);
+            });
+        });
     }
 
     // Hide event detail modal
