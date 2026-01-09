@@ -2529,7 +2529,18 @@ body {
 }
 
 .vibe-highlight {
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.2) 100%);
+    border: 1px solid rgba(255, 152, 0, 0.6);
+    border-radius: 6px;
+    padding: 2px 8px;
+    display: inline-block;
+    color: #FFD580;
+    font-weight: 600;
+}
+
+.date-highlight {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.2) 100%);
+    border: 1px solid rgba(255, 152, 0, 0.6);
     border-radius: 6px;
     padding: 2px 8px;
     display: inline-block;
