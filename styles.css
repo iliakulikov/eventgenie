@@ -2214,13 +2214,21 @@ body {
     color: var(--text-white);
 }
 
+.plan-type {
+    font-family: 'Spoof', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-gray);
+    white-space: nowrap;
+}
+
 .plan-badge {
     background: rgba(168, 85, 247, 0.2);
     color: var(--purple);
     font-family: 'Spoof', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    padding: 4px 12px;
+    padding: 4px 4px;
     border-radius: 20px;
     border: 1px solid rgba(168, 85, 247, 0.3);
     margin-left: auto;
@@ -2518,6 +2526,13 @@ body {
 .payment-step-subtitle {
     font-size: 16px;
     color: var(--text-gray);
+}
+
+.vibe-highlight {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 2px 8px;
+    display: inline-block;
 }
 
 .payment-section {
@@ -2842,7 +2857,7 @@ body {
     color: #14532d;
     font-size: 13px;
     font-weight: 600;
-    padding: 6px 12px;
+    padding: 4px 4px;
     border-radius: 8px;
     position: absolute;
     right: 16px;

@@ -199,7 +199,7 @@
         };
 
         if (vibe && vibeLabels[vibe]) {
-            vibeSubtitle.textContent = 'Your preferred vibe: ' + vibeLabels[vibe];
+            vibeSubtitle.innerHTML = 'Your preferred vibe: <span class="vibe-highlight">' + vibeLabels[vibe] + '</span>';
         }
     }
 
