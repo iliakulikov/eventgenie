@@ -5,13 +5,14 @@
     // DOM Elements
     let formData = {};
     let currentStep = 1;
-    const totalSteps = 3;
+    const totalSteps = 4;
 
     // Step elements
     const steps = {
         1: document.getElementById('step1'),
         2: document.getElementById('step2'),
-        3: document.getElementById('step3')
+        3: document.getElementById('step3'),
+        4: document.getElementById('step4')
     };
 
     // Progress fill
@@ -208,6 +209,7 @@
         // Back buttons
         const backBtn2 = document.getElementById('backBtn2');
         const backBtn3 = document.getElementById('backBtn3');
+        const backBtn4 = document.getElementById('backBtn4');
 
         if (backBtn2) {
             backBtn2.addEventListener('click', () => goToStep(1));
@@ -215,6 +217,10 @@
 
         if (backBtn3) {
             backBtn3.addEventListener('click', () => goToStep(2));
+        }
+
+        if (backBtn4) {
+            backBtn4.addEventListener('click', () => goToStep(3));
         }
 
         // Date card clicks
@@ -249,9 +255,18 @@
                 const radio = card.querySelector('input[type="radio"]');
                 radio.checked = true;
                 formData.selected_museum = card.querySelector('.event-card-title').textContent;
+                populateConfirmationDetails();
                 goToStep(3);
             });
         });
+
+        // Confirmation continue button
+        const confirmContinueBtn = document.getElementById('confirmContinueBtn');
+        if (confirmContinueBtn) {
+            confirmContinueBtn.addEventListener('click', () => {
+                goToStep(4);
+            });
+        }
 
         // Plan selection
         const planRadios = document.querySelectorAll('input[name="subscription_plan"]');
@@ -285,6 +300,32 @@
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Populate confirmation details
+    function populateConfirmationDetails() {
+        // Update date
+        const confirmDate = document.getElementById('confirmDate');
+        if (confirmDate && formData.selected_date) {
+            confirmDate.textContent = `${formData.selected_date.date} at ${formData.selected_date.time}`;
+        }
+
+        // Update museum
+        const confirmMuseum = document.getElementById('confirmMuseum');
+        if (confirmMuseum && formData.selected_museum) {
+            confirmMuseum.textContent = formData.selected_museum;
+        }
+
+        // Update vibe
+        const confirmVibe = document.getElementById('confirmVibe');
+        const vibeLabels = {
+            'classic': 'Classic & Historical',
+            'modern': 'Modern & Provocative',
+            'visual': 'Photography & Visuals'
+        };
+        if (confirmVibe && formData.vibe) {
+            confirmVibe.textContent = vibeLabels[formData.vibe] || formData.vibe;
+        }
     }
 
     // Setup all event handlers
