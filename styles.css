@@ -1638,10 +1638,10 @@ body {
 }
 
 .cookie-content {
-    background: rgba(16, 19, 24, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(250, 155, 46, 0.2);
+    background: rgba(16, 19, 24, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(250, 155, 46, 0.3);
     border-radius: 20px;
     padding: 20px 28px;
     display: flex;
@@ -2598,6 +2598,18 @@ body {
     align-items: center;
     gap: 6px;
     transition: box-shadow 0.2s ease;
+}
+
+.vibe-toggle::after {
+    content: '▼';
+    font-size: 10px;
+    margin-left: 2px;
+    opacity: 0.8;
+    transition: transform 0.2s ease;
+}
+
+.vibe-toggle:hover::after {
+    opacity: 1;
 }
 
 .vibe-toggle:hover {
