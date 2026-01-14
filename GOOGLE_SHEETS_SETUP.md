@@ -164,7 +164,7 @@ Just make sure to:
 | industry | String | User's industry |
 | phone | String | WhatsApp phone number |
 | email | String | Email address |
-| payment_confirmed | String | Yes / No |
+| payment_confirmed | String | Yes / No / Pending / btn click |
 
 ## Troubleshooting
 
@@ -252,3 +252,18 @@ function doPost(e) {
 - Consider adding a simple API key check for additional security
 - Regularly review your spreadsheet access permissions
 - The script only accepts POST requests
+
+## Lead Tracking (Payment Page)
+
+The payment page also sends lead data to the same spreadsheet when a user has `utm_email` in their URL:
+
+- **Trigger**: When a user with `utm_email` parameter clicks the "Continue to Payment" button on Step 4 (payment plans)
+- **Data sent**:
+  - `Date`: Timestamp in London timezone
+  - `utm`: Contains `utm_e=<email_value>` (the utm_email from URL)
+  - `payment_confirmed`: Always set to `btn click`
+  - All other fields: Empty
+
+**URL Example**: `https://yourdomain.com/payment.html?utm_email=test@example.com`
+
+This allows tracking of email leads who progress to the payment step, separate from quiz responses.

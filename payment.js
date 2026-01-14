@@ -12,6 +12,10 @@
         'visual': 'Photography & Visuals'
     };
 
+    // Lead tracking variables (for utm_email leads)
+    let utm_email = null;
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK1Ejj6wtzjGGymCry83q8IM_dMiZJ73CxY8FcPNp0YZPa1zyW_RqfK971c9kiqduN/exec';
+
     // Step elements
     const steps = {
         1: document.getElementById('step1'),
@@ -173,6 +177,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const rawVibe = urlParams.get('vibe');
         const vibeFromUrl = (rawVibe && vibeLabels[rawVibe]) ? rawVibe : null;
+        
+        // Get utm_e or utm_email from URL for lead tracking
+        utm_email = getUtmEmailData();
+        if (utm_email) {
+            console.log('UTM parameter detected:', utm_email.param, utm_email.value);
+        }
         
         console.log('URL vibe parameter:', vibeFromUrl);
         console.log('Available vibes in museums:', [...new Set(museumEvents.map(m => m.vibe))]);
@@ -404,6 +414,76 @@
         }
     }
 
+    // Extract utm_e or utm_email from URL
+    function getUtmEmailData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const utm_e = urlParams.get('utm_e');
+        const utm_email = urlParams.get('utm_email');
+        
+        if (utm_e) {
+            return { param: 'utm_e', value: utm_e };
+        } else if (utm_email) {
+            return { param: 'utm_email', value: utm_email };
+        }
+        return null;
+    }
+
+    // Send lead data to Google Sheets (for utm_email leads)
+    async function sendLeadToGoogleSheets() {
+        if (!utm_email) {
+            console.log('No utm_email found, skipping lead tracking');
+            return;
+        }
+
+        const leadFormData = new FormData();
+        
+        // Add the fields specified: Date, date2, museum, plan, utm_e
+        leadFormData.append('Date', new Date().toLocaleString('en-GB', { 
+            timeZone: 'Europe/London',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        }));
+        leadFormData.append('date2', formData.selected_date?.date || '');
+        leadFormData.append('museum', formData.selected_museum || '');
+        leadFormData.append('plan', formData.subscription_plan || '');
+        leadFormData.append('utm', `${utm_email.param}=${utm_email.value}`);
+        leadFormData.append('payment_confirmed', 'btn click');
+        
+        // All other fields empty
+        leadFormData.append('vibe', '');
+        leadFormData.append('introvert_extrovert', '');
+        leadFormData.append('logic_emotion', '');
+        leadFormData.append('humor', '');
+        leadFormData.append('personality_type', '');
+        leadFormData.append('first_name', '');
+        leadFormData.append('last_name', '');
+        leadFormData.append('dob', '');
+        leadFormData.append('gender', '');
+        leadFormData.append('industry', '');
+        leadFormData.append('phone', '');
+        leadFormData.append('email', '');
+
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: leadFormData
+            });
+
+            console.log('Lead data sent to Google Sheets successfully with:', {
+                date2: formData.selected_date?.date,
+                museum: formData.selected_museum,
+                plan: formData.subscription_plan
+            });
+            return true;
+        } catch (error) {
+            console.error('Error sending lead data to Google Sheets:', error);
+            return false;
+        }
+    }
+
     // Setup all event handlers
     function setupEventHandlers() {
         setupVibeSelector();
@@ -411,11 +491,17 @@
         // Plans Continue button
         const plansContinueBtn = document.getElementById('plansContinueBtn');
         if (plansContinueBtn) {
-            plansContinueBtn.addEventListener('click', () => {
+            plansContinueBtn.addEventListener('click', async () => {
                 const selectedPlan = document.querySelector('input[name="subscription_plan"]:checked');
                 if (selectedPlan) {
                     formData.subscription_plan = selectedPlan.value;
                     console.log('Selected plan:', selectedPlan.value);
+                    
+                    // Send lead tracking if utm_email is present
+                    if (utm_email) {
+                        await sendLeadToGoogleSheets();
+                    }
+                    
                     // Redirect to Stripe or payment processor
                     window.open('https://stripe.com', '_blank');
                 }
