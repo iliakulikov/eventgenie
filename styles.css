@@ -3121,7 +3121,7 @@ body {
 .confirmation-value {
     font-size: 15px;
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 400;
     text-align: right;
     max-width: 60%;
     letter-spacing: -0.2px;
@@ -3672,4 +3672,34 @@ body {
     .payment-bottom-button {
         width: 100%;
     }
+}
+
+/* Button loading state */
+.button-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.button-loading svg {
+    opacity: 0;
+}
+
+.button-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    margin-left: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #ffffff;
+    animation: button-spin 0.8s linear infinite;
+}
+
+@keyframes button-spin {
+    to { transform: rotate(360deg); }
 }
