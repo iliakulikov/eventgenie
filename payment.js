@@ -522,20 +522,39 @@
         const dateCardsContainer = document.getElementById('dateCards');
         if (!dateCardsContainer) return;
 
-        dateCardsContainer.innerHTML = eventDates.map((date, index) => `
-            <div class="date-card" data-date-index="${index}">
-                <input type="radio" name="event_date" value="${index}" class="date-card-radio">
-                <div class="date-card-icon">
-                    <img src="img/calendar-icon.webp" alt="Calendar">
-                    <span class="date-card-day">${date.date.match(/\d+/)?.[0] || ''}</span>
-                </div>
-                <div class="date-card-content">
-                    <div class="date-card-label">${date.label}</div>
-                    <div class="date-card-time">${date.date}, ${date.time}</div>
-                </div>
-                <div class="date-card-arrow">→</div>
-            </div>
-        `).join('');
+        // Get current date at midnight for comparison
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        dateCardsContainer.innerHTML = eventDates
+            .map((date, index) => {
+                // Parse the date string (e.g., "22 January") to a Date object for the current year
+                const [dayStr, monthStr] = date.date.split(' ');
+                const eventDate = new Date(`${monthStr} ${dayStr}, 2026`);
+                eventDate.setHours(0, 0, 0, 0);
+
+                // Skip dates that have already passed
+                if (eventDate < today) {
+                    return '';
+                }
+
+                return `
+                    <div class="date-card" data-date-index="${index}">
+                        <input type="radio" name="event_date" value="${index}" class="date-card-radio">
+                        <div class="date-card-icon">
+                            <img src="img/calendar-icon.webp" alt="Calendar">
+                            <span class="date-card-day">${date.date.match(/\d+/)?.[0] || ''}</span>
+                        </div>
+                        <div class="date-card-content">
+                            <div class="date-card-label">${date.label}</div>
+                            <div class="date-card-time">${date.date}, ${date.time}</div>
+                        </div>
+                        <div class="date-card-arrow">→</div>
+                    </div>
+                `;
+            })
+            .filter(card => card !== '')
+            .join('');
     }
 
     // Render event cards
