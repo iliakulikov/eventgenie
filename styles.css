@@ -475,7 +475,7 @@ body {
 
 .step-content h4 {
     font-family: 'Formular', sans-serif;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     line-height: 32px;
     margin-bottom: 6px;
@@ -490,7 +490,7 @@ body {
 }
 
 .step-content p {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 28px;
     color: var(--text-gray);
     margin-top: 4px;
