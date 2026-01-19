@@ -358,9 +358,57 @@
             radio.addEventListener('change', (e) => {
                 formData.subscription_plan = e.target.value;
                 console.log('User selected plan:', e.target.value);
+                updateBottomBar(e.target.value);
                 // When ready: submitPaymentData();
             });
         });
+    }
+
+    // Update bottom notification bar based on selected plan
+    function updateBottomBar(plan) {
+        const bottomBar = document.getElementById('paymentBottomBar');
+        const bottomBarPrice = document.getElementById('bottomBarPrice');
+        const bottomBarNotice = document.getElementById('bottomBarNotice');
+        
+        if (!bottomBar || !bottomBarPrice || !bottomBarNotice) return;
+
+        const planInfo = {
+            'pay-per-event': {
+                price: '£9.99',
+                recurring: false,
+                notice: 'One-time payment'
+            },
+            '1-month': {
+                price: '£13.99 every month',
+                recurring: true,
+                notice: 'You will get notified before autorenewal'
+            },
+            '3-months': {
+                price: '£32.99 every 3 months',
+                recurring: true,
+                notice: 'You will get notified before autorenewal'
+            },
+            '6-months': {
+                price: '£44.99 every 6 months',
+                recurring: true,
+                notice: 'You will get notified before autorenewal'
+            }
+        };
+
+        const info = planInfo[plan];
+        if (info) {
+            bottomBarPrice.textContent = info.price;
+            bottomBarNotice.textContent = info.notice;
+            bottomBar.classList.add('active');
+        }
+    }
+
+    // Hide bottom bar (e.g., when leaving step 4)
+    function hideBottomBar() {
+        const bottomBar = document.getElementById('paymentBottomBar');
+        if (bottomBar) {
+            bottomBar.classList.remove('active');
+        }
     }
 
     // Go to specific step
@@ -381,6 +429,17 @@
         // Update progress bar
         const progressPercent = (currentStep / totalSteps) * 100;
         progressFill.style.width = progressPercent + '%';
+
+        // Show/hide bottom bar based on step
+        if (stepNumber === 4) {
+            // Show bottom bar if a plan is already selected
+            const selectedPlan = document.querySelector('input[name="subscription_plan"]:checked');
+            if (selectedPlan) {
+                updateBottomBar(selectedPlan.value);
+            }
+        } else {
+            hideBottomBar();
+        }
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -428,13 +487,8 @@
         return null;
     }
 
-    // Send lead data to Google Sheets (for utm_email leads)
+    // Send lead data to Google Sheets (for all leads)
     async function sendLeadToGoogleSheets() {
-        if (!utm_email) {
-            console.log('No utm_email found, skipping lead tracking');
-            return;
-        }
-
         const leadFormData = new FormData();
         
         // Add the fields specified: Date, date2, museum, plan, utm_e
@@ -449,7 +503,14 @@
         leadFormData.append('date2', formData.selected_date?.date || '');
         leadFormData.append('museum', formData.selected_museum || '');
         leadFormData.append('plan', formData.subscription_plan || '');
-        leadFormData.append('utm', `${utm_email.param}=${utm_email.value}`);
+        
+        // Include UTM if present, otherwise mark as "direct"
+        if (utm_email) {
+            leadFormData.append('utm', `${utm_email.param}=${utm_email.value}`);
+        } else {
+            leadFormData.append('utm', 'direct');
+        }
+        
         leadFormData.append('payment_confirmed', 'btn click');
         
         // All other fields empty
@@ -488,36 +549,43 @@
     function setupEventHandlers() {
         setupVibeSelector();
 
-        // Plans Continue button
+        // Handle payment redirect
+        const handlePaymentContinue = async () => {
+            const selectedPlan = document.querySelector('input[name="subscription_plan"]:checked');
+            if (selectedPlan) {
+                formData.subscription_plan = selectedPlan.value;
+                console.log('Selected plan:', selectedPlan.value);
+
+                // Send lead tracking for all conversions
+                await sendLeadToGoogleSheets();
+
+                // Map plans to Stripe checkout links
+                const stripeLinks = {
+                    'pay-per-event': 'https://book.stripe.com/3cI28t5Bd1WO7rTcCe9AA00',
+                    '1-month': 'https://buy.stripe.com/cNi6oJ6Fh44W5jL31E9AA01',
+                    '3-months': 'https://buy.stripe.com/dRm3cx5Bd7h87rT8lY9AA02',
+                    '6-months': 'https://buy.stripe.com/eVq4gBe7J44WfYpdGi9AA03'
+                };
+
+                const link = stripeLinks[selectedPlan.value];
+                if (link) {
+                    window.open(link, '_blank');
+                } else {
+                    console.warn('No Stripe link configured for plan:', selectedPlan.value);
+                }
+            }
+        };
+
+        // Plans Continue button (main button in step 4)
         const plansContinueBtn = document.getElementById('plansContinueBtn');
         if (plansContinueBtn) {
-            plansContinueBtn.addEventListener('click', async () => {
-                const selectedPlan = document.querySelector('input[name="subscription_plan"]:checked');
-                if (selectedPlan) {
-                    formData.subscription_plan = selectedPlan.value;
-                    console.log('Selected plan:', selectedPlan.value);
+            plansContinueBtn.addEventListener('click', handlePaymentContinue);
+        }
 
-                    // Send lead tracking if utm_email is present
-                    if (utm_email) {
-                        await sendLeadToGoogleSheets();
-                    }
-
-                    // Map plans to Stripe checkout links
-                    const stripeLinks = {
-                        'pay-per-event': 'https://book.stripe.com/3cI28t5Bd1WO7rTcCe9AA00',
-                        '1-month': 'https://buy.stripe.com/cNi6oJ6Fh44W5jL31E9AA01',
-                        '3-months': 'https://buy.stripe.com/dRm3cx5Bd7h87rT8lY9AA02',
-                        '6-months': 'https://buy.stripe.com/eVq4gBe7J44WfYpdGi9AA03'
-                    };
-
-                    const link = stripeLinks[selectedPlan.value];
-                    if (link) {
-                        window.open(link, '_blank');
-                    } else {
-                        console.warn('No Stripe link configured for plan:', selectedPlan.value);
-                    }
-                }
-            });
+        // Bottom bar Continue button
+        const bottomBarContinueBtn = document.getElementById('bottomBarContinueBtn');
+        if (bottomBarContinueBtn) {
+            bottomBarContinueBtn.addEventListener('click', handlePaymentContinue);
         }
     }
 
