@@ -496,14 +496,26 @@
                 if (selectedPlan) {
                     formData.subscription_plan = selectedPlan.value;
                     console.log('Selected plan:', selectedPlan.value);
-                    
+
                     // Send lead tracking if utm_email is present
                     if (utm_email) {
                         await sendLeadToGoogleSheets();
                     }
-                    
-                    // Redirect to Stripe or payment processor
-                    window.open('https://stripe.com', '_blank');
+
+                    // Map plans to Stripe checkout links
+                    const stripeLinks = {
+                        'pay-per-event': 'https://book.stripe.com/3cI28t5Bd1WO7rTcCe9AA00',
+                        '1-month': 'https://buy.stripe.com/cNi6oJ6Fh44W5jL31E9AA01',
+                        '3-months': 'https://buy.stripe.com/dRm3cx5Bd7h87rT8lY9AA02',
+                        '6-months': 'https://buy.stripe.com/eVq4gBe7J44WfYpdGi9AA03'
+                    };
+
+                    const link = stripeLinks[selectedPlan.value];
+                    if (link) {
+                        window.open(link, '_blank');
+                    } else {
+                        console.warn('No Stripe link configured for plan:', selectedPlan.value);
+                    }
                 }
             });
         }
