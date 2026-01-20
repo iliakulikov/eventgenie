@@ -432,18 +432,6 @@
 
         // Show/hide bottom bar based on step
         if (stepNumber === 4) {
-            // Stop spinner when returning to step 4
-            const btns = [
-                document.getElementById('plansContinueBtn'),
-                document.getElementById('bottomBarContinueBtn')
-            ];
-            btns.forEach(btn => {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.classList.remove('button-loading');
-                }
-            });
-
             // Show bottom bar if a plan is already selected
             const selectedPlan = document.querySelector('input[name="subscription_plan"]:checked');
             if (selectedPlan) {
@@ -590,15 +578,16 @@
             try {
                 setLoading(true);
                 await sendLeadToGoogleSheets();
+                // Stop spinner immediately after data is sent
+                setLoading(false);
                 if (stripeUrl) {
                     window.location.href = stripeUrl; // same window
                 } else {
                     console.warn('No Stripe link configured for plan:', selectedPlan.value);
                 }
-            } finally {
-                if (!stripeUrl) {
-                    setLoading(false);
-                }
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                setLoading(false);
             }
         };
 
