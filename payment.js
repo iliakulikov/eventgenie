@@ -432,6 +432,18 @@
 
         // Show/hide bottom bar based on step
         if (stepNumber === 4) {
+            // Stop spinner when returning to step 4
+            const btns = [
+                document.getElementById('plansContinueBtn'),
+                document.getElementById('bottomBarContinueBtn')
+            ];
+            btns.forEach(btn => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.classList.remove('button-loading');
+                }
+            });
+
             // Show bottom bar if a plan is already selected
             const selectedPlan = document.querySelector('input[name="subscription_plan"]:checked');
             if (selectedPlan) {
