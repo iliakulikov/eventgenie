@@ -10,7 +10,6 @@
     const screens = document.querySelectorAll('.quiz-screen');
     const nextButtons = document.querySelectorAll('[data-next]');
     const confirmYesBtn = document.getElementById('confirmYes');
-    const confirmNoBtn = document.getElementById('confirmNo');
     
     // Also bind to "Join the Next Experience" button
     const heroBtn = document.querySelector('.cta-button');
@@ -328,10 +327,9 @@
             // Show loading state
             confirmYesBtn.classList.add('loading');
             confirmYesBtn.disabled = true;
-            confirmNoBtn.disabled = true;
             
-            // Send to Google Sheets with confirmation (second submission with 'Yes')
-            const success = await sendToGoogleSheets(formData, 'Yes');
+            // Send to Google Sheets with confirmation status 'confirmed'
+            const success = await sendToGoogleSheets(formData, 'confirmed');
 
             if (success) {
                 try {
@@ -351,41 +349,10 @@
                     console.error('Error redirecting to payment:', err);
                     confirmYesBtn.classList.remove('loading');
                     confirmYesBtn.disabled = false;
-                    confirmNoBtn.disabled = false;
                 }
             } else {
-                // Re-enable buttons on error
+                // Re-enable button on error
                 confirmYesBtn.classList.remove('loading');
-                confirmYesBtn.disabled = false;
-                confirmNoBtn.disabled = false;
-            }
-        });
-    }
-
-    if (confirmNoBtn) {
-        confirmNoBtn.addEventListener('click', async () => {
-            collectFormData();
-            
-            // Show loading state
-            confirmNoBtn.classList.add('loading');
-            confirmNoBtn.disabled = true;
-            confirmYesBtn.disabled = true;
-            
-            // Send to Google Sheets without confirmation (second submission with 'No')
-            const success = await sendToGoogleSheets(formData, 'No');
-            
-            if (success) {
-                // Show thank you message in modal
-                showFinalMessage(
-                    '💙',
-                    'Thank You!',
-                    'We\'ve saved your information for future events. We\'ll reach out when we have something that matches your preferences.',
-                    'info'
-                );
-            } else {
-                // Re-enable buttons on error
-                confirmNoBtn.classList.remove('loading');
-                confirmNoBtn.disabled = false;
                 confirmYesBtn.disabled = false;
             }
         });
