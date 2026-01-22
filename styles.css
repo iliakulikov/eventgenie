@@ -2779,6 +2779,12 @@ body {
     gap: 12px;
 }
 
+.week-divider {
+    height: 1px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    margin: 8px 0;
+}
+
 .date-card {
     display: flex;
     align-items: center;

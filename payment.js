@@ -625,35 +625,47 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        dateCardsContainer.innerHTML = eventDates
-            .map((date, index) => {
-                // Parse the date string (e.g., "22 January") to a Date object for the current year
-                const [dayStr, monthStr] = date.date.split(' ');
-                const eventDate = new Date(`${monthStr} ${dayStr}, 2026`);
-                eventDate.setHours(0, 0, 0, 0);
+        // First, filter valid future dates
+        const validDates = [];
+        eventDates.forEach((date, index) => {
+            const [dayStr, monthStr] = date.date.split(' ');
+            const eventDate = new Date(`${monthStr} ${dayStr}, 2026`);
+            eventDate.setHours(0, 0, 0, 0);
 
-                // Skip dates that have already passed
-                if (eventDate < today) {
-                    return '';
-                }
+            if (eventDate > today) {
+                validDates.push({ ...date, originalIndex: index });
+            }
+        });
 
-                return `
-                    <div class="date-card" data-date-index="${index}">
-                        <input type="radio" name="event_date" value="${index}" class="date-card-radio">
-                        <div class="date-card-icon">
-                            <img src="img/calendar-icon.webp" alt="Calendar">
-                            <span class="date-card-day">${date.date.match(/\d+/)?.[0] || ''}</span>
-                        </div>
-                        <div class="date-card-content">
-                            <div class="date-card-label">${date.label}</div>
-                            <div class="date-card-time">${date.date}, ${date.time}</div>
-                        </div>
-                        <div class="date-card-arrow">→</div>
+        // Now build cards with dividers
+        const cards = [];
+        validDates.forEach((date, index) => {
+            cards.push(`
+                <div class="date-card" data-date-index="${date.originalIndex}">
+                    <input type="radio" name="event_date" value="${date.originalIndex}" class="date-card-radio">
+                    <div class="date-card-icon">
+                        <img src="img/calendar-icon.webp" alt="Calendar">
+                        <span class="date-card-day">${date.date.match(/\d+/)?.[0] || ''}</span>
                     </div>
-                `;
-            })
-            .filter(card => card !== '')
-            .join('');
+                    <div class="date-card-content">
+                        <div class="date-card-label">${date.label}</div>
+                        <div class="date-card-time">${date.date}, ${date.time}</div>
+                    </div>
+                    <div class="date-card-arrow">→</div>
+                </div>
+            `);
+
+            // Add week divider if there's a gap > 1 day to the next date
+            if (index < validDates.length - 1) {
+                const currentDay = parseInt(date.date.split(' ')[0]);
+                const nextDay = parseInt(validDates[index + 1].date.split(' ')[0]);
+                if (nextDay - currentDay > 1) {
+                    cards.push('<div class="week-divider"></div>');
+                }
+            }
+        });
+
+        dateCardsContainer.innerHTML = cards.join('');
     }
 
     // Render event cards
