@@ -14,7 +14,7 @@
 
     // Lead tracking variables (for utm_email leads)
     let utm_email = null;
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK1Ejj6wtzjGGymCry83q8IM_dMiZJ73CxY8FcPNp0YZPa1zyW_RqfK971c9kiqduN/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpCzSSURmZdAPqC7bemODADkb2xrbgL5DI7H8M4uVFaQ-ezdtt2kWKXfj9tDhrl1w/exec';
 
     // Step elements
     const steps = {
@@ -175,11 +175,20 @@
 
         // Get vibe from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const rawVibe = urlParams.get('vibe');
+        urlParams.forEach((value, key) => {
+            if (value) {
+                formData[key] = value;
+            }
+        });
+
+        const rawVibe = formData.vibe || urlParams.get('vibe');
         const vibeFromUrl = (rawVibe && vibeLabels[rawVibe]) ? rawVibe : null;
         
         // Get utm_e or utm_email from URL for lead tracking
         utm_email = getUtmEmailData();
+        if (!formData.utm && utm_email) {
+            formData.utm = `${utm_email.param}=${utm_email.value}`;
+        }
         if (utm_email) {
             console.log('UTM parameter detected:', utm_email.param, utm_email.value);
         }
@@ -193,11 +202,11 @@
         }
 
         // Update vibe subtitle on Step 1
-        updateVibeSubtitle(vibeFromUrl);
+        updateVibeSubtitle(vibeFromUrl || formData.vibe);
 
         // Render dates and museums based on vibe
         renderDateCards();
-        renderEventCards(vibeFromUrl);
+        renderEventCards(vibeFromUrl || formData.vibe);
 
         // Setup event handlers
         setupEventHandlers();
@@ -491,7 +500,7 @@
     async function sendLeadToGoogleSheets() {
         const leadFormData = new FormData();
         
-        // Add the fields specified: Date, date2, museum, plan, utm_e
+        // Add the fields specified: Date, date2, museum, plan, utm
         leadFormData.append('Date', new Date().toLocaleString('en-GB', { 
             timeZone: 'Europe/London',
             year: 'numeric',
@@ -503,29 +512,24 @@
         leadFormData.append('date2', formData.selected_date?.date || '');
         leadFormData.append('museum', formData.selected_museum || '');
         leadFormData.append('plan', formData.subscription_plan || '');
-        
-        // Include UTM if present, otherwise mark as "direct"
-        if (utm_email) {
-            leadFormData.append('utm', `${utm_email.param}=${utm_email.value}`);
-        } else {
-            leadFormData.append('utm', 'direct');
-        }
-        
+
+        const utmValue = formData.utm || (utm_email ? `${utm_email.param}=${utm_email.value}` : 'direct');
+        leadFormData.append('utm', utmValue);
         leadFormData.append('payment_confirmed', 'btn click');
-        
-        // All other fields empty
-        leadFormData.append('vibe', '');
-        leadFormData.append('introvert_extrovert', '');
-        leadFormData.append('logic_emotion', '');
-        leadFormData.append('humor', '');
-        leadFormData.append('personality_type', '');
-        leadFormData.append('first_name', '');
-        leadFormData.append('last_name', '');
-        leadFormData.append('dob', '');
-        leadFormData.append('gender', '');
-        leadFormData.append('industry', '');
-        leadFormData.append('phone', '');
-        leadFormData.append('email', '');
+
+        // Populate lead data from previous page when available
+        leadFormData.append('vibe', formData.vibe || '');
+        leadFormData.append('introvert_extrovert', formData.introvert_extrovert || '');
+        leadFormData.append('logic_emotion', formData.logic_emotion || '');
+        leadFormData.append('humor', formData.humor || '');
+        leadFormData.append('personality_type', formData.personality_type || '');
+        leadFormData.append('first_name', formData.first_name || '');
+        leadFormData.append('last_name', formData.last_name || '');
+        leadFormData.append('dob', formData.dob || '');
+        leadFormData.append('gender', formData.gender || '');
+        leadFormData.append('industry', formData.industry || '');
+        leadFormData.append('phone', formData.phone || '');
+        leadFormData.append('email', formData.email || '');
 
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL, {

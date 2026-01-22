@@ -22,7 +22,7 @@
     let hasClaimedDiscount = false;  // Track if user claimed the discount
 
     // Google Sheets Configuration
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK1Ejj6wtzjGGymCry83q8IM_dMiZJ73CxY8FcPNp0YZPa1zyW_RqfK971c9kiqduN/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpCzSSURmZdAPqC7bemODADkb2xrbgL5DI7H8M4uVFaQ-ezdtt2kWKXfj9tDhrl1w/exec';
 
     // Museum Events Data
     const museumEvents = [
@@ -332,15 +332,27 @@
             
             // Send to Google Sheets with confirmation (second submission with 'Yes')
             const success = await sendToGoogleSheets(formData, 'Yes');
-            
+
             if (success) {
-                // Show thank you message in modal with contact notification
-                showFinalMessage(
-                    '💙',
-                    'Thank You!',
-                    'We\'ll get in contact with you soon. Our team will reach out via email to confirm your spot and provide payment details.',
-                    'success'
-                );
+                try {
+                    // Persist lead data locally for the payment page
+                    localStorage.setItem('eventgenieUser', JSON.stringify(formData));
+
+                    // Build URL with all captured fields for redundancy
+                    const params = new URLSearchParams();
+                    Object.entries(formData).forEach(([key, value]) => {
+                        if (value) params.append(key, value);
+                    });
+                    if (utmParams) params.append('utm', utmParams);
+
+                    // Redirect to payment in the same tab
+                    window.location.href = `payment.html?${params.toString()}`;
+                } catch (err) {
+                    console.error('Error redirecting to payment:', err);
+                    confirmYesBtn.classList.remove('loading');
+                    confirmYesBtn.disabled = false;
+                    confirmNoBtn.disabled = false;
+                }
             } else {
                 // Re-enable buttons on error
                 confirmYesBtn.classList.remove('loading');
