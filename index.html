@@ -529,13 +529,29 @@
     </div>
 
     <!-- Cookie Consent Banner -->
-    <div class="cookie-banner">
+    <div class="cookie-banner" id="cookieBanner">
         <div class="cookie-content">
             <p class="cookie-text">🍪 We respect your privacy. This site uses cookies to enhance your experience. We're fully compliant with data protection regulations.</p>
-            <button class="cookie-dismiss" onclick="this.parentElement.parentElement.style.display='none'">Got it</button>
+            <button class="cookie-dismiss" id="acceptCookies">Got it</button>
         </div>
     </div>
 
+    <script>
+        // Cookie banner logic
+        const cookieBanner = document.getElementById('cookieBanner');
+        const acceptCookiesBtn = document.getElementById('acceptCookies');
+        
+        // Check if user has already accepted cookies
+        if (localStorage.getItem('cookiesAccepted') === 'true') {
+            cookieBanner.style.display = 'none';
+        }
+        
+        // Handle accept button click
+        acceptCookiesBtn.addEventListener('click', function() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            cookieBanner.style.display = 'none';
+        });
+    </script>
     <script src="quiz.js"></script>
 </body>
 </html>
