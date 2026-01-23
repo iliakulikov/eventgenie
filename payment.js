@@ -27,15 +27,78 @@
     // Progress fill
     const progressFill = document.getElementById('paymentProgressFill');
 
+    // Generate event dates for a year (Thu-Fri-Sat pattern only)
+    function generateEventDates() {
+        const dates = [];
+        
+        // Since today is Thursday, we want:
+        // Week 1 (partial): Fri 24, Sat 25 (this week's remaining days)
+        // Week 2: Thu 29, Fri 30, Sat 31
+        // Week 3: Thu 5, Fri 6, Sat 7
+        // etc.
+        
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        
+        let firstDate;
+        
+        if (dayOfWeek === 4) {
+            // Today is Thursday - start from tomorrow (Friday)
+            firstDate = new Date(today);
+            firstDate.setDate(firstDate.getDate() + 1);
+        } else if (dayOfWeek === 5) {
+            // Today is Friday - start from today
+            firstDate = new Date(today);
+        } else if (dayOfWeek === 6) {
+            // Today is Saturday - start from today
+            firstDate = new Date(today);
+        } else {
+            // Other days - find next Thursday
+            const daysUntilThursday = (4 - dayOfWeek + 7) % 7 || 7;
+            firstDate = new Date(today);
+            firstDate.setDate(firstDate.getDate() + daysUntilThursday);
+        }
+        
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        // Generate dates
+        let currentDate = new Date(firstDate);
+        const endDate = new Date(firstDate);
+        endDate.setFullYear(endDate.getFullYear() + 1);
+        
+        let daysAdded = 0;
+        while (currentDate < endDate && daysAdded < 156) { // 52 weeks * 3 days
+            const dayName = dayNames[currentDate.getDay()];
+            const monthName = monthNames[currentDate.getMonth()];
+            const dateNum = currentDate.getDate();
+            
+            const label = `${dayName} Evening`;
+            const dateStr = `${dateNum} ${monthName}`;
+            
+            dates.push({
+                label: label,
+                date: dateStr,
+                time: '7:00 PM'
+            });
+            
+            daysAdded++;
+            
+            // Jump to next Thu-Fri-Sat sequence
+            // If we just added a Saturday, jump to next Thursday
+            if (currentDate.getDay() === 6) {
+                currentDate.setDate(currentDate.getDate() + 5); // Sat + 5 = next Thursday
+            } else {
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+        }
+        
+        return dates;
+    }
+
     // Event dates
-    const eventDates = [
-        { label: 'Thursday Evening', date: '22 January', time: '7:00 PM' },
-        { label: 'Friday Evening', date: '23 January', time: '7:00 PM' },
-        { label: 'Saturday Evening', date: '24 January', time: '7:00 PM' },
-        { label: 'Thursday Evening', date: '29 January', time: '7:00 PM' },
-        { label: 'Friday Evening', date: '30 January', time: '7:00 PM' },
-        { label: 'Saturday Evening', date: '31 January', time: '7:00 PM' }
-    ];
+    const eventDates = generateEventDates();
     const museumEvents = [
         {
             id: 1,
@@ -353,6 +416,18 @@
             });
         });
 
+        // Restore selected date card if exists
+        if (formData.selected_date) {
+            const selectedIndex = eventDates.findIndex(d => d.date === formData.selected_date.date);
+            if (selectedIndex !== -1) {
+                const selectedCard = document.querySelector(`.date-card[data-date-index="${selectedIndex}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('selected');
+                    selectedCard.querySelector('input[type="radio"]').checked = true;
+                }
+            }
+        }
+
         // Confirmation continue button
         const confirmContinueBtn = document.getElementById('confirmContinueBtn');
         if (confirmContinueBtn) {
@@ -448,6 +523,35 @@
             }
         } else {
             hideBottomBar();
+        }
+
+        // Restore selected states when navigating to specific steps
+        if (stepNumber === 1 && formData.selected_date) {
+            // Restore selected date card
+            setTimeout(() => {
+                const selectedIndex = eventDates.findIndex(d => d.date === formData.selected_date.date);
+                if (selectedIndex !== -1) {
+                    const selectedCard = document.querySelector(`.date-card[data-date-index="${selectedIndex}"]`);
+                    if (selectedCard) {
+                        document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
+                        selectedCard.classList.add('selected');
+                        selectedCard.querySelector('input[type="radio"]').checked = true;
+                    }
+                }
+            }, 0);
+        } else if (stepNumber === 2 && formData.selected_museum) {
+            // Restore selected museum card
+            setTimeout(() => {
+                const eventCards = document.querySelectorAll('.event-card');
+                eventCards.forEach(card => {
+                    const museumName = card.querySelector('.event-card-title').textContent;
+                    if (museumName === formData.selected_museum) {
+                        eventCards.forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        card.querySelector('input[type="radio"]').checked = true;
+                    }
+                });
+            }, 0);
         }
 
         // Scroll to top
@@ -625,7 +729,7 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        // First, filter valid future dates
+        // Filter valid future dates
         const validDates = [];
         eventDates.forEach((date, index) => {
             const [dayStr, monthStr] = date.date.split(' ');
@@ -637,31 +741,57 @@
             }
         });
 
-        // Now build cards with dividers
-        const cards = [];
-        validDates.forEach((date, index) => {
-            cards.push(`
-                <div class="date-card" data-date-index="${date.originalIndex}">
-                    <input type="radio" name="event_date" value="${date.originalIndex}" class="date-card-radio">
-                    <div class="date-card-icon">
-                        <img src="img/calendar-icon.webp" alt="Calendar">
-                        <span class="date-card-day">${date.date.match(/\d+/)?.[0] || ''}</span>
-                    </div>
-                    <div class="date-card-content">
-                        <div class="date-card-label">${date.label}</div>
-                        <div class="date-card-time">${date.date}, ${date.time}</div>
-                    </div>
-                    <div class="date-card-arrow">→</div>
-                </div>
-            `);
+        // Group dates into weeks (Thu-Fri-Sat pattern)
+        const weeks = [];
+        let currentWeek = [];
+        
+        validDates.forEach((date) => {
+            currentWeek.push(date);
+            
+            // Check if this is Saturday (day 6)
+            const [dayStr, monthStr] = date.date.split(' ');
+            const dateObj = new Date(`${monthStr} ${dayStr}, 2026`);
+            
+            // If Saturday or if it's the last date, close the week
+            if (dateObj.getDay() === 6 || validDates.indexOf(date) === validDates.length - 1) {
+                weeks.push(currentWeek);
+                currentWeek = [];
+            }
+        });
+        
+        // If there's a partial week at the end, add it
+        if (currentWeek.length > 0) {
+            weeks.push(currentWeek);
+        }
 
-            // Add week divider if there's a gap > 1 day to the next date
-            if (index < validDates.length - 1) {
-                const currentDay = parseInt(date.date.split(' ')[0]);
-                const nextDay = parseInt(validDates[index + 1].date.split(' ')[0]);
-                if (nextDay - currentDay > 1) {
-                    cards.push('<div class="week-divider"></div>');
-                }
+        // Take only first 3 weeks
+        const displayWeeks = weeks.slice(0, 3);
+
+        // Flatten weeks and build cards with dividers
+        const cards = [];
+        let weekIndex = 0;
+        
+        displayWeeks.forEach((week, wIndex) => {
+            week.forEach((date, dIndex) => {
+                cards.push(`
+                    <div class="date-card" data-date-index="${date.originalIndex}">
+                        <input type="radio" name="event_date" value="${date.originalIndex}" class="date-card-radio">
+                        <div class="date-card-icon">
+                            <img src="img/calendar-icon.webp" alt="Calendar">
+                            <span class="date-card-day">${date.date.match(/\d+/)?.[0] || ''}</span>
+                        </div>
+                        <div class="date-card-content">
+                            <div class="date-card-label">${date.label}</div>
+                            <div class="date-card-time">${date.date}, ${date.time}</div>
+                        </div>
+                        <div class="date-card-arrow">→</div>
+                    </div>
+                `);
+            });
+            
+            // Add week divider after each week (except the last one)
+            if (wIndex < displayWeeks.length - 1) {
+                cards.push('<div class="week-divider"></div>');
             }
         });
 
@@ -696,6 +826,12 @@
         const eventCards = eventCardsContainer.querySelectorAll('.event-card');
         eventCards.forEach(card => {
             card.addEventListener('click', () => {
+                // Remove selected class from all cards
+                eventCards.forEach(c => c.classList.remove('selected'));
+                
+                // Add selected class to clicked card
+                card.classList.add('selected');
+                
                 const radio = card.querySelector('input[type="radio"]');
                 radio.checked = true;
                 formData.selected_museum = card.querySelector('.event-card-title').textContent;
@@ -703,6 +839,17 @@
                 goToStep(3);
             });
         });
+
+        // Restore selected museum card if exists
+        if (formData.selected_museum) {
+            eventCards.forEach(card => {
+                const museumName = card.querySelector('.event-card-title').textContent;
+                if (museumName === formData.selected_museum) {
+                    card.classList.add('selected');
+                    card.querySelector('input[type="radio"]').checked = true;
+                }
+            });
+        }
     }
 
     // Hide event detail modal
