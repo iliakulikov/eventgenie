@@ -333,14 +333,16 @@
 
             if (success) {
                 try {
-                    // Persist lead data locally for the payment page
+                    // Store sensitive data in sessionStorage (not exposed to Meta Pixel)
+                    sessionStorage.setItem('eventgenieUser', JSON.stringify(formData));
+                    
+                    // Also persist in localStorage as backup
                     localStorage.setItem('eventgenieUser', JSON.stringify(formData));
 
-                    // Build URL with all captured fields for redundancy
+                    // Build URL with ONLY non-sensitive parameters
                     const params = new URLSearchParams();
-                    Object.entries(formData).forEach(([key, value]) => {
-                        if (value) params.append(key, value);
-                    });
+                    // Only include non-PII data in URL
+                    if (formData.vibe) params.append('vibe', formData.vibe);
                     if (utmParams) params.append('utm', utmParams);
 
                     // Redirect to payment in the same tab

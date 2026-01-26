@@ -230,16 +230,28 @@
 
     // Initialize page on load
     function initPage() {
-        // Load user data from localStorage
-        const storedUser = localStorage.getItem('eventgenieUser');
-        if (storedUser) {
-            formData = JSON.parse(storedUser);
+        // Priority 1: Read from sessionStorage (secure transfer from quiz page)
+        const sessionUser = sessionStorage.getItem('eventgenieUser');
+        if (sessionUser) {
+            formData = JSON.parse(sessionUser);
+            console.log('Loaded user data from sessionStorage (secure)');
+            // Clear sessionStorage after reading (one-time use)
+            sessionStorage.removeItem('eventgenieUser');
+        } else {
+            // Priority 2: Fallback to localStorage
+            const storedUser = localStorage.getItem('eventgenieUser');
+            if (storedUser) {
+                formData = JSON.parse(storedUser);
+                console.log('Loaded user data from localStorage (fallback)');
+            }
         }
 
-        // Get vibe from URL parameter
+        // Priority 3: Read non-sensitive params from URL (vibe, utm only)
         const urlParams = new URLSearchParams(window.location.search);
+        // Only read non-sensitive parameters from URL
+        const nonSensitiveParams = ['vibe', 'utm', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
         urlParams.forEach((value, key) => {
-            if (value) {
+            if (value && nonSensitiveParams.includes(key)) {
                 formData[key] = value;
             }
         });
